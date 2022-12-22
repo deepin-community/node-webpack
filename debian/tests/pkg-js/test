@@ -1,0 +1,1 @@
+echo "Tests are disabled because jest is not packaged yet" 

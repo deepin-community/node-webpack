@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+%:
+	dh $@
+
+override_dh_install:
+	dh_install
+	find debian/webpack/usr/share/nodejs/webpack -name .eslintrc.js -delete
+
+override_dh_fixperms:
+	dh_fixperms
+	chmod +x debian/webpack/usr/share/nodejs/webpack/bin/webpack.js
+
+override_dh_auto_clean:
+	rm -f test/statsCases/exclude-with-loader/actual.txt
+	rm -f test/statsCases/filter-warnings/actual.txt
+	rm -f test/statsCases/warnings-uglifyjs/actual.txt
+	rm -f test/statsCases/aggressive-splitting-on-demand/actual.txt
+	rm -f test/statsCases/chunks-development/actual.txt
+	rm -f test/statsCases/limit-chunk-count-plugin/actual.txt
+	rm -f test/statsCases/max-modules-default/actual.txt
+	rm -f test/statsCases/max-modules/actual.txt
+	rm -f test/statsCases/reverse-sort-modules/actual.txt
+	rm -rf test/js/*
+	rm -rf test/fixtures/temp-*
+	rm -rf node_modules eslint-scope/node_modules webpack-cli/node_modules import-local/node_modules v8-compile-cache/node_modules
+	dh_auto_clean

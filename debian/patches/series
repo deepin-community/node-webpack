@@ -1,0 +1,3 @@
+use-uglifyjs-plugin.patch
+fix-for-mkdirp.diff
+fix-for-schema-utils-3.diff

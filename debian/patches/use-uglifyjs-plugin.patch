@@ -1,0 +1,983 @@
+Reverse of https://github.com/webpack/webpack/commit/b7128d82ae41dadc3e4dd1d1d0225851dedaef65.patch
+
+--- a/benchmark/createBenchmark.js
++++ b/benchmark/createBenchmark.js
+@@ -15,7 +15,7 @@
+ 		},
+ 		plugins: [
+ 			new webpack.NamedModulesPlugin(),
+-			new webpack.IgnorePlugin(/^(fsevents|terser)$/),
++			new webpack.IgnorePlugin(/^(fsevents|uglify-js)$/),
+ 			new webpack.NormalModuleReplacementPlugin(
+ 				/^.\/loadLoader$/,
+ 				path.resolve(__dirname, "./createBenchmark/loadLoader")
+--- a/lib/WebpackOptionsDefaulter.js
++++ b/lib/WebpackOptionsDefaulter.js
+@@ -304,10 +304,10 @@
+ 		this.set("optimization.minimizer", "make", options => [
+ 			{
+ 				apply: compiler => {
+-					// Lazy load the Terser plugin
+-					const TerserPlugin = require("terser-webpack-plugin");
++					// Lazy load the uglifyjs plugin
++					const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+ 					const SourceMapDevToolPlugin = require("./SourceMapDevToolPlugin");
+-					new TerserPlugin({
++					new UglifyJsPlugin({
+ 						cache: true,
+ 						parallel: true,
+ 						sourceMap:
+--- a/test/TestCases.template.js
++++ b/test/TestCases.template.js
+@@ -5,14 +5,14 @@
+ const fs = require("fs");
+ const vm = require("vm");
+ const mkdirp = require("mkdirp");
+-const TerserPlugin = require("terser-webpack-plugin");
++const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+ const checkArrayExpectation = require("./checkArrayExpectation");
+ const createLazyTestEnv = require("./helpers/createLazyTestEnv");
+ 
+ const Stats = require("../lib/Stats");
+ const webpack = require("../lib/webpack");
+ 
+-const terserForTesting = new TerserPlugin({
++const uglifyJsForTesting = new UglifyJsPlugin({
+ 	cache: false,
+ 	parallel: false,
+ 	sourceMap: true
+@@ -31,12 +31,12 @@
+ 	concatenateModules: false,
+ 	namedModules: false,
+ 	hashedModuleIds: false,
+-	minimizer: [terserForTesting]
++	minimizer: [uglifyJsForTesting]
+ };
+ 
+ const NO_EMIT_ON_ERRORS_OPTIMIZATIONS = {
+ 	noEmitOnErrors: false,
+-	minimizer: [terserForTesting]
++	minimizer: [uglifyJsForTesting]
+ };
+ 
+ const casesPath = path.join(__dirname, "cases");
+--- a/test/__snapshots__/StatsTestCases.test.js.snap
++++ b/test/__snapshots__/StatsTestCases.test.js.snap
+@@ -833,35 +833,35 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]
+-Child Terser:
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js
++Child UglifyJs:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+     Built at: Thu Jan 01 1970 00:00:00 GMT
+         Asset      Size  Chunks             Chunk Names
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+-Child /Terser/:
++Child /UglifyJs/:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+     Built at: Thu Jan 01 1970 00:00:00 GMT
+@@ -875,14 +875,14 @@
+         Asset      Size  Chunks             Chunk Names
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+-Child [Terser]:
++Child [UglifyJs]:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+     Built at: Thu Jan 01 1970 00:00:00 GMT
+         Asset      Size  Chunks             Chunk Names
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+-Child [/Terser/]:
++Child [/UglifyJs/]:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+     Built at: Thu Jan 01 1970 00:00:00 GMT
+@@ -904,27 +904,27 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js
+ Child /should not filter/:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+@@ -933,27 +933,27 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js
+ Child warnings => false:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+@@ -962,27 +962,27 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js
+ Child [should not filter]:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+@@ -991,27 +991,27 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js
+ Child [/should not filter/]:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+@@ -1020,27 +1020,27 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js"
+ Child [warnings => false]:
+     Hash: 167b89b0d93ab09243ce
+     Time: Xms
+@@ -1049,27 +1049,27 @@
+     bundle.js  2.89 KiB       0  [emitted]  main
+     Entrypoint main = bundle.js
+     
+-    WARNING in Terser Plugin: Dropping side-effect-free statement [./index.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping side-effect-free statement [./index.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction1 [./index.js:8,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction2 [./index.js:9,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction3 [./index.js:10,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction4 [./index.js:11,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someUnUsedFunction5 [./index.js:12,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction1 [./a.js:3,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction2 [./a.js:4,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction3 [./a.js:5,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0]
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction4 [./a.js:6,0] in bundle.js
+     
+-    WARNING in Terser Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0]"
++    WARNING in UglifyJs Plugin: Dropping unused function someRemoteUnUsedFunction5 [./a.js:7,0] in bundle.js"
+ `;
+ 
+ exports[`StatsTestCases should print correct stats for graph-correctness-entries 1`] = `
+@@ -3522,7 +3522,7 @@
+      [no exports used]"
+ `;
+ 
+-exports[`StatsTestCases should print correct stats for warnings-terser 1`] = `
++exports[`StatsTestCases should print correct stats for warnings-uglifyjs 1`] = `
+ "Hash: b1d135d55f1314d24fc5
+ Time: Xms
+ Built at: Thu Jan 01 1970 00:00:00 GMT
+@@ -3533,13 +3533,13 @@
+ [1] ./a.js 249 bytes {0} [built]
+ [2] (webpack)/buildin/module.js 497 bytes {0} [built]
+ 
+-WARNING in Terser Plugin: Dropping unused function someUnRemoteUsedFunction1 [./a.js:3,0]
++WARNING in UglifyJs Plugin: Dropping unused function someUnRemoteUsedFunction1 [./a.js:3,0] in bundle.js
+ 
+-WARNING in Terser Plugin: Dropping unused function someUnRemoteUsedFunction2 [./a.js:4,0]
++WARNING in UglifyJs Plugin: Dropping unused function someUnRemoteUsedFunction2 [./a.js:4,0] in bundle.js
+ 
+-WARNING in Terser Plugin: Dropping unused function someUnRemoteUsedFunction3 [./a.js:5,0]
++WARNING in UglifyJs Plugin: Dropping unused function someUnRemoteUsedFunction3 [./a.js:5,0] in bundle.js
+ 
+-WARNING in Terser Plugin: Dropping unused function someUnRemoteUsedFunction4 [./a.js:6,0]
++WARNING in UglifyJs Plugin: Dropping unused function someUnRemoteUsedFunction4 [./a.js:6,0] in bundle.js
+ 
+-WARNING in Terser Plugin: Dropping unused function someUnRemoteUsedFunction5 [./a.js:7,0]"
++WARNING in UglifyJs Plugin: Dropping unused function someUnRemoteUsedFunction5 [./a.js:7,0] in bundle.js"
+ `;
+--- a/test/cases/parsing/optional-catch-binding/test.filter.js
++++ b/test/cases/parsing/optional-catch-binding/test.filter.js
+@@ -1,7 +1,7 @@
+ const supportsOptionalCatchBinding = require("../../../helpers/supportsOptionalCatchBinding");
+ 
+ module.exports = function(config) {
+-	// XXX: Disable this test if Terser is used because it does not support ES 2019
++	// XXX: Disable this test if UglifyJS is used because it does not support ES 2019
+ 	if (config.mode === "production") {
+ 		return false;
+ 	}
+--- a/test/checkArrayExpectation.js
++++ b/test/checkArrayExpectation.js
+@@ -17,7 +17,7 @@
+ 	}
+ 	let array = object[`${kind}s`].slice().sort();
+ 	if (kind === "warning")
+-		array = array.filter(item => !/from Terser/.test(item));
++		array = array.filter(item => !/from UglifyJs/.test(item));
+ 	if (fs.existsSync(path.join(testDirectory, `${filename}.js`))) {
+ 		const expectedFilename = path.join(testDirectory, `${filename}.js`);
+ 		const expected = require(expectedFilename);
+--- a/test/configCases/plugins/source-map-dev-tool-plugin/webpack.config.js
++++ b/test/configCases/plugins/source-map-dev-tool-plugin/webpack.config.js
+@@ -1,5 +1,5 @@
+ var webpack = require("../../../../");
+-var TerserPlugin = require("terser-webpack-plugin");
++var UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+ module.exports = {
+ 	node: {
+ 		__dirname: false,
+@@ -14,7 +14,7 @@
+ 	},
+ 	optimization: {
+ 		minimizer: [
+-			new TerserPlugin({
++			new UglifyJsPlugin({
+ 				sourceMap: true
+ 			})
+ 		]
+--- a/test/configCases/plugins/terser-plugin/compress.js
++++ /dev/null
+@@ -1,14 +0,0 @@
+-function f() {
+-	var a = 1, b = 2, c = 3;
+-	if (a) {
+-		b = c;
+-	} else {
+-		c = b;
+-	}
+-	console.log(a + b);
+-	console.log(b + c);
+-	console.log(a + c);
+-	console.log(a + b + c);
+-}
+-
+-module.exports = f;
+--- a/test/configCases/plugins/terser-plugin/extract.js
++++ /dev/null
+@@ -1,17 +0,0 @@
+-var foo = {};
+-
+-// ⚠️ move the following comment back to the top
+-// https://github.com/mishoo/UglifyJS2/issues/2500
+-/** @preserve comment should be extracted extract-test.1 */
+-
+-// comment should be stripped extract-test.2
+-
+-/*!
+- * comment should be extracted extract-test.3
+- */
+-
+-/**
+- * comment should be stripped extract-test.4
+- */
+-
+-module.exports = foo;
+--- a/test/configCases/plugins/terser-plugin/ie8.js
++++ /dev/null
+@@ -1,11 +0,0 @@
+-function t(e) {
+-    return function(error) {
+-        try {
+-            e()
+-        } catch(e) {
+-            error(e)
+-        }
+-    }
+-}
+-
+-module.exports = t;
+--- a/test/configCases/plugins/terser-plugin/index.js
++++ /dev/null
+@@ -1,65 +0,0 @@
+-it("should contain no comments in out chunk", () => {
+-	const fs = require("fs");
+-
+-	const source = fs.readFileSync(__filename, "utf-8");
+-
+-	expect(source).not.toMatch(/[^\"]comment should be stripped test\.1[^\"]/);
+-	expect(source).not.toMatch(/[^\"]comment should be stripped test\.2[^\"]/);
+-	expect(source).not.toMatch(/[^\"]comment should be stripped test\.3[^\"]/);
+-});
+-
+-it("should contain comments in vendors chunk", function() {
+-	const fs = require("fs");
+-	const path = require("path");
+-
+-	const source = fs.readFileSync(path.join(__dirname, "vendors.js"), "utf-8");
+-
+-	expect(source).toMatch("comment should not be stripped vendors.1");
+-	expect(source).toMatch("// comment should not be stripped vendors.2");
+-	expect(source).toMatch(" * comment should not be stripped vendors.3");
+-});
+-
+-it("should extract comments to separate file", function() {
+-	const fs = require("fs");
+-	const path = require("path");
+-
+-	const source = fs.readFileSync(path.join(__dirname, "extract.js.LICENSE"), "utf-8");
+-
+-	expect(source).toMatch("comment should be extracted extract-test.1");
+-	expect(source).not.toMatch("comment should be stripped extract-test.2");
+-	expect(source).toMatch("comment should be extracted extract-test.3");
+-	expect(source).not.toMatch("comment should be stripped extract-test.4");
+-});
+-
+-it("should remove extracted comments and insert a banner", function() {
+-	const fs = require("fs");
+-	const path = require("path");
+-
+-	const source = fs.readFileSync(path.join(__dirname, "extract.js"), "utf-8");
+-
+-	expect(source).not.toMatch("comment should be extracted extract-test.1");
+-	expect(source).not.toMatch("comment should be stripped extract-test.2");
+-	expect(source).not.toMatch("comment should be extracted extract-test.3");
+-	expect(source).not.toMatch("comment should be stripped extract-test.4");
+-	expect(source).toMatch("/*! For license information please see extract.js.LICENSE */");
+-});
+-
+-it("should pass mangle options", function() {
+-	const fs = require("fs");
+-	const path = require("path");
+-
+-	const source = fs.readFileSync(path.join(__dirname, "ie8.js"), "utf-8");
+-
+-	expect(source).toMatch(".exports=function(e){return function(t){try{e()}catch(e){t(e)}}}");
+-});
+-
+-it("should pass compress options", function() {
+-	const fs = require("fs");
+-	const path = require("path");
+-
+-	const source = fs.readFileSync(path.join(__dirname, "compress.js"), "utf-8");
+-
+-	expect(source).toMatch(".exports=function(){console.log(4),console.log(6),console.log(4),console.log(7)}");
+-});
+-
+-require.include("./test.js");
+--- a/test/configCases/plugins/terser-plugin/test.js
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/** @preserve comment should be stripped test.1 */
+-
+-var foo = {};
+-
+-// comment should be stripped test.2
+-
+-/**
+- * comment should be stripped test.3
+- */
+-
+-module.exports = foo;
+--- a/test/configCases/plugins/terser-plugin/vendors.js
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/** @preserve comment should not be stripped vendors.1 */
+-
+-var bar = {};
+-
+-// comment should not be stripped vendors.2
+-
+-/**
+- * comment should not be stripped vendors.3
+- */
+-
+-module.exports = bar;
+--- a/test/configCases/plugins/terser-plugin/webpack.config.js
++++ /dev/null
+@@ -1,43 +0,0 @@
+-const TerserPlugin = require("terser-webpack-plugin");
+-module.exports = {
+-	node: {
+-		__dirname: false,
+-		__filename: false
+-	},
+-	entry: {
+-		ie8: ["./ie8.js"],
+-		bundle0: ["./index.js"],
+-		vendors: ["./vendors.js"],
+-		extract: ["./extract.js"],
+-		compress: ["./compress.js"]
+-	},
+-	output: {
+-		filename: "[name].js"
+-	},
+-	optimization: {
+-		minimize: true,
+-		minimizer: [
+-			new TerserPlugin({
+-				cache: false,
+-				parallel: false,
+-				exclude: ["vendors.js", "extract.js"]
+-			}),
+-			new TerserPlugin({
+-				cache: false,
+-				parallel: false,
+-				extractComments: true,
+-				include: ["extract.js"]
+-			}),
+-			new TerserPlugin({
+-				cache: false,
+-				parallel: false,
+-				terserOptions: {
+-					compress: {
+-						passes: 2
+-					}
+-				},
+-				include: ["compress.js"]
+-			})
+-		]
+-	}
+-};
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/compress.js
+@@ -0,0 +1,14 @@
++function f() {
++	var a = 1, b = 2, c = 3;
++	if (a) {
++		b = c;
++	} else {
++		c = b;
++	}
++	console.log(a + b);
++	console.log(b + c);
++	console.log(a + c);
++	console.log(a + b + c);
++}
++
++module.exports = f;
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/extract.js
+@@ -0,0 +1,17 @@
++var foo = {};
++
++// ⚠️ move the following comment back to the top
++// https://github.com/mishoo/UglifyJS2/issues/2500
++/** @preserve comment should be extracted extract-test.1 */
++
++// comment should be stripped extract-test.2
++
++/*!
++ * comment should be extracted extract-test.3
++ */
++
++/**
++ * comment should be stripped extract-test.4
++ */
++
++module.exports = foo;
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/ie8.js
+@@ -0,0 +1,11 @@
++function t(e) {
++    return function(error) {
++        try {
++            e()
++        } catch(e) {
++            error(e)
++        }
++    }
++}
++
++module.exports = t;
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/index.js
+@@ -0,0 +1,65 @@
++it("should contain no comments in out chunk", () => {
++	const fs = require("fs");
++
++	const source = fs.readFileSync(__filename, "utf-8");
++
++	expect(source).not.toMatch(/[^\"]comment should be stripped test\.1[^\"]/);
++	expect(source).not.toMatch(/[^\"]comment should be stripped test\.2[^\"]/);
++	expect(source).not.toMatch(/[^\"]comment should be stripped test\.3[^\"]/);
++});
++
++it("should contain comments in vendors chunk", function() {
++	const fs = require("fs");
++	const path = require("path");
++
++	const source = fs.readFileSync(path.join(__dirname, "vendors.js"), "utf-8");
++
++	expect(source).toMatch("comment should not be stripped vendors.1");
++	expect(source).toMatch("// comment should not be stripped vendors.2");
++	expect(source).toMatch(" * comment should not be stripped vendors.3");
++});
++
++it("should extract comments to separate file", function() {
++	const fs = require("fs");
++	const path = require("path");
++
++	const source = fs.readFileSync(path.join(__dirname, "extract.js.LICENSE"), "utf-8");
++
++	expect(source).toMatch("comment should be extracted extract-test.1");
++	expect(source).not.toMatch("comment should be stripped extract-test.2");
++	expect(source).toMatch("comment should be extracted extract-test.3");
++	expect(source).not.toMatch("comment should be stripped extract-test.4");
++});
++
++it("should remove extracted comments and insert a banner", function() {
++	const fs = require("fs");
++	const path = require("path");
++
++	const source = fs.readFileSync(path.join(__dirname, "extract.js"), "utf-8");
++
++	expect(source).not.toMatch("comment should be extracted extract-test.1");
++	expect(source).not.toMatch("comment should be stripped extract-test.2");
++	expect(source).not.toMatch("comment should be extracted extract-test.3");
++	expect(source).not.toMatch("comment should be stripped extract-test.4");
++	expect(source).toMatch("/*! For license information please see extract.js.LICENSE */");
++});
++
++it("should pass mangle options", function() {
++	const fs = require("fs");
++	const path = require("path");
++
++	const source = fs.readFileSync(path.join(__dirname, "ie8.js"), "utf-8");
++
++	expect(source).toMatch(".exports=function(e){return function(t){try{e()}catch(e){t(e)}}}");
++});
++
++it("should pass compress options", function() {
++	const fs = require("fs");
++	const path = require("path");
++
++	const source = fs.readFileSync(path.join(__dirname, "compress.js"), "utf-8");
++
++	expect(source).toMatch(".exports=function(){console.log(4),console.log(6),console.log(4),console.log(7)}");
++});
++
++require.include("./test.js");
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/test.js
+@@ -0,0 +1,11 @@
++/** @preserve comment should be stripped test.1 */
++
++var foo = {};
++
++// comment should be stripped test.2
++
++/**
++ * comment should be stripped test.3
++ */
++
++module.exports = foo;
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/vendors.js
+@@ -0,0 +1,11 @@
++/** @preserve comment should not be stripped vendors.1 */
++
++var bar = {};
++
++// comment should not be stripped vendors.2
++
++/**
++ * comment should not be stripped vendors.3
++ */
++
++module.exports = bar;
+--- /dev/null
++++ b/test/configCases/plugins/uglifyjs-plugin/webpack.config.js
+@@ -0,0 +1,43 @@
++const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
++module.exports = {
++	node: {
++		__dirname: false,
++		__filename: false
++	},
++	entry: {
++		ie8: ["./ie8.js"],
++		bundle0: ["./index.js"],
++		vendors: ["./vendors.js"],
++		extract: ["./extract.js"],
++		compress: ["./compress.js"]
++	},
++	output: {
++		filename: "[name].js"
++	},
++	optimization: {
++		minimize: true,
++		minimizer: [
++			new UglifyJsPlugin({
++				cache: false,
++				parallel: false,
++				exclude: ["vendors.js", "extract.js"]
++			}),
++			new UglifyJsPlugin({
++				cache: false,
++				parallel: false,
++				extractComments: true,
++				include: ["extract.js"]
++			}),
++			new UglifyJsPlugin({
++				cache: false,
++				parallel: false,
++				uglifyOptions: {
++					compress: {
++						passes: 2
++					}
++				},
++				include: ["compress.js"]
++			})
++		]
++	}
++};
+--- a/test/statsCases/filter-warnings/webpack.config.js
++++ b/test/statsCases/filter-warnings/webpack.config.js
+@@ -1,4 +1,4 @@
+-const TerserPlugin = require("terser-webpack-plugin");
++const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+ const baseConfig = {
+ 	mode: "production",
+ 	entry: "./index",
+@@ -8,9 +8,9 @@
+ 	optimization: {
+ 		minimize: true,
+ 		minimizer: [
+-			new TerserPlugin({
++			new UglifyJsPlugin({
+ 				sourceMap: true,
+-				terserOptions: {
++				uglifyOptions: {
+ 					compress: {
+ 						warnings: true
+ 					},
+@@ -34,11 +34,11 @@
+ 
+ module.exports = [
+ 	undefined,
+-	"Terser",
+-	/Terser/,
++	"UglifyJs",
++	/UglifyJs/,
+ 	warnings => true,
+-	["Terser"],
+-	[/Terser/],
++	["UglifyJs"],
++	[/UglifyJs/],
+ 	[warnings => true],
+ 	"should not filter",
+ 	/should not filter/,
+--- a/test/statsCases/warnings-terser/webpack.config.js
++++ /dev/null
+@@ -1,36 +0,0 @@
+-const TerserPlugin = require("terser-webpack-plugin");
+-module.exports = {
+-	mode: "production",
+-	entry: "./index",
+-	output: {
+-		filename: "bundle.js"
+-	},
+-	optimization: {
+-		minimize: true,
+-		minimizer: [
+-			new TerserPlugin({
+-				sourceMap: true,
+-				terserOptions: {
+-					compress: {
+-						warnings: true
+-					},
+-					mangle: false,
+-					output: {
+-						beautify: true,
+-						comments: false
+-					},
+-					warnings: true
+-				},
+-				warningsFilter(message, filename) {
+-					return /a\.js$/.test(filename);
+-				}
+-			})
+-		]
+-	},
+-	stats: {
+-		chunkModules: false,
+-		modules: true,
+-		providedExports: true,
+-		usedExports: true
+-	}
+-};
+--- /dev/null
++++ b/test/statsCases/warnings-uglifyjs/webpack.config.js
+@@ -0,0 +1,36 @@
++const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
++module.exports = {
++	mode: "production",
++	entry: "./index",
++	output: {
++		filename: "bundle.js"
++	},
++	optimization: {
++		minimize: true,
++		minimizer: [
++			new UglifyJsPlugin({
++				sourceMap: true,
++				uglifyOptions: {
++					compress: {
++						warnings: true
++					},
++					mangle: false,
++					output: {
++						beautify: true,
++						comments: false
++					},
++					warnings: true
++				},
++				warningsFilter(filename) {
++					return /a\.js$/.test(filename);
++				}
++			})
++		]
++	},
++	stats: {
++		chunkModules: false,
++		modules: true,
++		providedExports: true,
++		usedExports: true
++	}
++};
+--- a/test/statsCases/warnings-terser/a.js
++++ /dev/null
+@@ -1,7 +0,0 @@
+-module.export = function someUsedFunction() {};
+-
+-function someUnRemoteUsedFunction1() {}
+-function someUnRemoteUsedFunction2() {}
+-function someUnRemoteUsedFunction3() {}
+-function someUnRemoteUsedFunction4() {}
+-function someUnRemoteUsedFunction5() {}
+--- a/test/statsCases/warnings-terser/index.js
++++ /dev/null
+@@ -1,12 +0,0 @@
+-var someRequiredUsedFunction = require("./a");
+-
+-function someUsedFunction() {}
+-
+-someRequiredUsedFunction();
+-someUsedFunction();
+-
+-function someUnUsedFunction1() {}
+-function someUnUsedFunction2() {}
+-function someUnUsedFunction3() {}
+-function someUnUsedFunction4() {}
+-function someUnUsedFunction5() {}
+--- /dev/null
++++ b/test/statsCases/warnings-uglifyjs/a.js
+@@ -0,0 +1,7 @@
++module.export = function someUsedFunction() {};
++
++function someUnRemoteUsedFunction1() {}
++function someUnRemoteUsedFunction2() {}
++function someUnRemoteUsedFunction3() {}
++function someUnRemoteUsedFunction4() {}
++function someUnRemoteUsedFunction5() {}
+--- /dev/null
++++ b/test/statsCases/warnings-uglifyjs/index.js
+@@ -0,0 +1,12 @@
++var someRequiredUsedFunction = require("./a");
++
++function someUsedFunction() {}
++
++someRequiredUsedFunction();
++someUsedFunction();
++
++function someUnUsedFunction1() {}
++function someUnUsedFunction2() {}
++function someUnUsedFunction3() {}
++function someUnUsedFunction4() {}
++function someUnUsedFunction5() {}

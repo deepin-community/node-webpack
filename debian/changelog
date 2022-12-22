@@ -1,0 +1,249 @@
+node-webpack (4.43.0-6) unstable; urgency=medium
+
+  * Team upload
+  * Set upstream metadata fields: Bug-Submit, Security-Contact.
+  * Remove obsolete fields Contact, Name from debian/upstream/metadata
+    (already present in machine-readable debian/copyright).
+  * Declare compliance with policy 4.5.1
+  * Modernize debian/watch
+
+ -- Xavier Guimard <yadd@debian.org>  Fri, 20 Nov 2020 05:42:51 +0100
+
+node-webpack (4.43.0-5) unstable; urgency=medium
+
+  * Team upload
+  * Back to unstable after successful test
+
+ -- Xavier Guimard <yadd@debian.org>  Thu, 19 Nov 2020 08:38:45 +0100
+
+node-webpack (4.43.0-4) experimental; urgency=medium
+
+  * Team upload
+  * Add fix for node-schema-utils ≥ 3
+
+ -- Xavier Guimard <yadd@debian.org>  Tue, 17 Nov 2020 18:54:25 +0100
+
+node-webpack (4.43.0-3) unstable; urgency=medium
+
+  * Team upload
+  * Embed an old interpret
+
+ -- Xavier Guimard <yadd@debian.org>  Mon, 26 Oct 2020 06:46:50 +0100
+
+node-webpack (4.43.0-2) unstable; urgency=medium
+
+  * Team upload
+  * Bump debhelper compatibility level to 13
+  * Use dh-sequence-nodejs
+  * Add fix for node-mkdirp ≥ 1
+
+ -- Xavier Guimard <yadd@debian.org>  Sun, 25 Oct 2020 21:53:21 +0100
+
+node-webpack (4.43.0-1) unstable; urgency=medium
+
+  * Team upload
+  * Back to unstable
+  * New upstream version 4.43.0
+
+ -- Xavier Guimard <yadd@debian.org>  Sat, 02 May 2020 08:51:31 +0200
+
+node-webpack (4.42.1-1) experimental; urgency=medium
+
+  * Team Upload
+
+  [ Pirate Praveen ]
+  * Update eslint-scope dependency to 4.0
+  * New upstream version 4.32.2
+
+  * Refresh patch
+  [ Abraham Raji ]
+  * New upstream version 4.42.1
+  * Updated use-uglifyjs-plugin.patch
+
+ -- Abraham Raji <avronr@tuta.io>  Fri, 10 Apr 2020 20:20:45 +0200
+
+node-webpack (4.30.0-9) unstable; urgency=medium
+
+  * Team upload
+  * Remove also node-acorn-dynamic-import from binary dependency
+
+ -- Xavier Guimard <yadd@debian.org>  Sat, 21 Mar 2020 10:11:29 +0100
+
+node-webpack (4.30.0-8) unstable; urgency=medium
+
+  * Team upload
+  * Remove duplicate dependencies to virtual packages provided by node-acorn:
+    this blocks many migrations
+
+ -- Xavier Guimard <yadd@debian.org>  Sat, 21 Mar 2020 09:51:15 +0100
+
+node-webpack (4.30.0-7) unstable; urgency=medium
+
+  * Revert switch to terser-webpack-plugin (not packaged yet)
+
+ -- Pirate Praveen <praveen@debian.org>  Sat, 14 Mar 2020 15:51:23 +0530
+
+node-webpack (4.30.0-6) unstable; urgency=medium
+
+  * Source only upload for testing migration
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 13 Mar 2020 16:57:11 +0530
+
+node-webpack (4.30.0-5) unstable; urgency=medium
+
+  * Team upload
+  * Back to unstable
+  * Declare compliance with policy 4.5.0
+  * Add "Rules-Requires-Root: no"
+  * Update lintian overrides
+  * Add Provides: node-webpack
+
+ -- Xavier Guimard <yadd@debian.org>  Wed, 11 Mar 2020 23:21:13 +0100
+
+node-webpack (4.30.0-4) experimental; urgency=medium
+
+  * Add node-json-parse-better-errors and node-webassemblyjs as Depends
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 17 Jan 2020 19:59:07 +0530
+
+node-webpack (4.30.0-3) experimental; urgency=medium
+
+  * Binary included upload as buildd does not respect build profile field
+    (Built-For-Profiles: nocheck in source.changes)
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 17 Jan 2020 18:10:49 +0530
+
+node-webpack (4.30.0-2) experimental; urgency=medium
+
+  * Build with DEB_BUILD_PROFILES=nocheck to avoid circular build dependency
+    on node-uglifyjs-webpack-plugin
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 17 Jan 2020 17:25:57 +0530
+
+node-webpack (4.30.0-1) experimental; urgency=medium
+
+  [ Xavier Guimard ]
+  * Install SECURITY.md and CONTRIBUTING.md
+  * Ignore upstream .gitignore
+  * Update lintian overrides
+
+  [ Pirate Praveen ]
+  * Add nocheck build profile
+  * Use an older tags page to download 4.30.0
+  * New upstream version 4.30.0
+
+ -- Pirate Praveen <praveen@debian.org>  Tue, 15 Oct 2019 22:40:38 +0530
+
+node-webpack (4.7.0-3) unstable; urgency=medium
+
+  * Reupload to unstable
+  * Relax dependency on node-micromatch
+  * Add workaround for #933847
+
+ -- Pirate Praveen <praveen@debian.org>  Sun, 04 Aug 2019 12:27:00 +0000
+
+node-webpack (4.7.0-2) experimental; urgency=medium
+
+  * Update minimum version of node-uglifyjs-webpack-plugin (Closes: #933488)
+
+ -- Pirate Praveen <praveen@debian.org>  Wed, 31 Jul 2019 08:21:40 +0000
+
+node-webpack (4.7.0-1) experimental; urgency=medium
+
+  * New upstream version 4.7.0
+
+ -- Pirate Praveen <praveen@debian.org>  Tue, 30 Jul 2019 15:16:44 +0000
+
+node-webpack (4.0.0-3) experimental; urgency=medium
+
+  * Add node-supports-color as dependency
+
+ -- Pirate Praveen <praveen@debian.org>  Tue, 30 Jul 2019 10:58:09 +0000
+
+node-webpack (4.0.0-2) experimental; urgency=medium
+
+  * Tighten dependencies for missing dependency fixes
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 29 Jul 2019 20:33:44 +0000
+
+node-webpack (4.0.0-1) experimental; urgency=medium
+
+  [ Pirate Praveen ]
+  * Use salsa.debian.org in Vcs-* fields
+  * New upstream version 4.0.0
+  * Add eslint-scope as component
+  * Tighten dependencies
+  * Switch to pkg-js-tools for tests
+  * Add webpack-cli as a component
+  * pkg-js-tools can handle components
+  * Clean component node_modules as well
+  * Install in /usr/share/nodejs
+  * Install node_modules
+  * Switch to pkg-js-tools 0.8.3 auto install
+  * Add import-local as a component
+  * Add dependency for embedded import-local
+  * Clean node_modules in new component
+  * Add v8-compile-cache as a component
+
+  [ Xavier Guimard ]
+  * Require pkg-js-tools 0.8.4
+  * Drop unneeded version constraints from (build) dependencies
+  * Remove unneeded debian/dirs
+  * Add upstream/metadata
+  * Bump debhelper compatibility level to 12
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 29 Jul 2019 16:41:38 +0200
+
+node-webpack (3.5.6-4) unstable; urgency=medium
+
+  * Forbid node-acorn (>= 6) as dependency (to make webpack work in
+    experimental)
+  * Bump Standards-Version to 4.3.0 (no changes needed)
+  * Add ~ to debhelper version to support backports
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 24 Jun 2019 21:16:38 +0530
+
+node-webpack (3.5.6-3.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix "FTBFS and autopkgtest failure on 32-bit":
+    reduce --max-old-space-size=4096 to 2048 in debian/rules and
+    debian/tests/control as suggested by Graham Inggs.
+    (Closes: #898752)
+
+ -- gregor herrmann <gregoa@debian.org>  Sun, 02 Dec 2018 12:12:04 +0100
+
+node-webpack (3.5.6-3) unstable; urgency=medium
+
+  * Update autopkgtest dependencies (fixes autopkgtest failure)
+
+ -- Pirate Praveen <praveen@debian.org>  Thu, 08 Mar 2018 19:30:40 +0530
+
+node-webpack (3.5.6-2) unstable; urgency=medium
+
+  * Fix package name in autopkgtest
+  * Exclude test/Compiler.test.js to avoid hangs
+  * Enable upstream tests as autopkgtests
+  * Bump standards version to 4.1.3 and debhelper compat to 11
+
+ -- Pirate Praveen <praveen@debian.org>  Sat, 03 Mar 2018 01:17:02 +0530
+
+node-webpack (3.5.6-1) unstable; urgency=medium
+
+  * New upstream release
+  * Remove test/js/* in clean
+  * Move to main (all dependencies are now in main)
+
+ -- Pirate Praveen <praveen@debian.org>  Wed, 27 Sep 2017 14:15:15 +0530
+
+node-webpack (2.6.1-2) unstable; urgency=medium
+
+  * Reupload to unstable
+
+ -- Pirate Praveen <praveen@debian.org>  Wed, 13 Sep 2017 15:30:23 +0530
+
+node-webpack (2.6.1-1) experimental; urgency=low
+
+  * Initial release (Closes: #805906)
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 23 Jun 2017 22:24:09 +0530

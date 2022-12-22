@@ -1,0 +1,11 @@
+# false positive, example/test data
+source: source-is-missing examples/aggressive-merging/common.js line length is 778 characters (>512)
+source: source-is-missing test/cases/parsing/browserify/index.js line length is 736 characters (>512)
+source: very-long-line-length-in-source-file examples/aggressive-merging/common.js line length is 779 characters (>512)
+source: source-contains-prebuilt-javascript-object examples/aggressive-merging/common.js line length is 778 characters (>512)
+source: very-long-line-length-in-source-file test/cases/parsing/browserify/index.js line length is 737 characters (>512)
+source: source-contains-prebuilt-javascript-object test/cases/parsing/browserify/index.js line length is 736 characters (>512)
+# Uninstalled files
+source: source-contains-prebuilt-wasm-binary examples/wasm-simple/add.wasm
+source: source-contains-prebuilt-wasm-binary examples/wasm-simple/factorial.wasm
+source: source-contains-prebuilt-wasm-binary examples/wasm-simple/fibonacci.wasm

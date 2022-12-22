@@ -1,0 +1,88 @@
+Source: node-webpack
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Pirate Praveen <praveen@debian.org>
+Section: javascript
+Testsuite: autopkgtest-pkg-nodejs
+Priority: optional
+Build-Depends:
+ debhelper-compat (= 13)
+ , nodejs
+ , dh-sequence-nodejs
+ , node-sinon <!nocheck>
+ , node-acorn (>= 6.0~) <!nocheck>
+ , node-ajv (>= 6.1~) <!nocheck>
+ , node-ajv-keywords (>= 3.1~) <!nocheck>
+ , node-chrome-trace-event <!nocheck>
+ , node-enhanced-resolve (>= 4.0~) <!nocheck>
+ , node-loader-runner <!nocheck>
+ , node-loader-utils (>= 1.1~) <!nocheck>
+ , node-memory-fs <!nocheck>
+ , node-micromatch <!nocheck>
+ , node-mkdirp (>= 1) <!nocheck>
+ , node-neo-async <!nocheck>
+ , node-libs-browser <!nocheck>
+ , node-schema-utils (>= 3.0.0~) <!nocheck>
+ , node-tapable (>= 1.0~) <!nocheck>
+ , node-uglifyjs-webpack-plugin (>= 1.3.0-4~) <!nocheck>
+ , node-watchpack (>= 1.4~) <!nocheck>
+ , node-webpack-sources <!nocheck>
+# for webpack-cli
+# import-local
+   , node-resolve-cwd <!nocheck>
+#
+ , node-interpret <!nocheck>
+ , node-findup-sync <!nocheck>
+ , node-supports-color <!nocheck>
+ , node-yargs <!nocheck>
+# for eslint-scope
+ , node-estraverse <!nocheck>
+ , node-esrecurse <!nocheck>
+Standards-Version: 4.5.1
+Vcs-Browser: https://salsa.debian.org/js-team/node-webpack
+Vcs-Git: https://salsa.debian.org/js-team/node-webpack.git
+Homepage: https://github.com/webpack/webpack
+Rules-Requires-Root: no
+
+Package: webpack
+Architecture: all
+Depends:
+ ${misc:Depends}
+ , nodejs
+ , node-webassemblyjs
+ , node-acorn (>= 6.0~)
+ , node-ajv (>= 6.1~)
+ , node-ajv-keywords (>= 3.1~)
+ , node-enhanced-resolve (>= 4.0~)
+ , node-loader-runner
+ , node-loader-utils (>= 1.1~)
+ , node-memory-fs
+ , node-micromatch
+ , node-mkdirp (>= 1)
+ , node-neo-async
+ , node-libs-browser
+ , node-schema-utils (>= 3.0.0~)
+ , node-tapable (>= 1.0~)
+ , node-uglifyjs-webpack-plugin (>= 1.3.0-4~)
+ , node-watchpack (>= 1.4~)
+ , node-anymatch (>= 3.0.3+~2.0.7-2~)
+ , node-webpack-sources
+# for webpack-cli
+# import-local
+ , node-resolve-cwd
+ , node-interpret
+ , node-findup-sync
+ , node-supports-color
+ , node-yargs
+# for eslint-scope
+ , node-estraverse
+ , node-esrecurse
+# for v8-compile-cache
+ , node-json-parse-better-errors
+Provides: node-webpack
+Description: Packs CommonJs/AMD modules for the browser
+ Webpack takes code targeted at node.js and makes it run in the browser.
+ Node.js comes with API of its own that is not available in the browsers.
+ Webpack exposes this code to programs that are unaware they are running in a
+ browser.
+ .
+ Node.js is an event-based server-side JavaScript engine.
