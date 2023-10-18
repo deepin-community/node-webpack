@@ -1,0 +1,4 @@
+mkdir -p node_modules
+ln -s ../.. node_modules/webpack
+ln -s ../packages/webpack-cli node_modules/webpack-cli
+tsc -b

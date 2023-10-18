@@ -1,6 +1,7 @@
 const stringifyRequest = require("loader-utils").stringifyRequest;
 
-module.exports.pitch = function(remainingRequest) {
+/** @type {import("../../../../").PitchLoaderDefinitionFunction} */
+module.exports.pitch = function (remainingRequest) {
 	return `
 	import { getString as _getString, memory } from ${stringifyRequest(
 		this,

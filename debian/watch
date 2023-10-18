@@ -1,21 +1,34 @@
 version=4
 opts=\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-webpack-$1.tar.gz/ \
- https://github.com/webpack/webpack/tags .*/archive/v?([\d\.]+).tar.gz debian
+repacksuffix=+dfsg1,\
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-webpack-$1/ \
+ https://github.com/webpack/webpack/tags .*/archive/.*/v?([\d\.]+).tar.gz group
 
-opts="searchmode=plain,pgpmode=none,component=eslint-scope" \
-https://registry.npmjs.org/eslint-scope \
-https://registry.npmjs.org/eslint-scope/-/eslint-scope-(4.[\d\.]*)@ARCHIVE_EXT@ ignore
+opts=\
+component=envinfo,\
+ctype=nodejs,\
+dversionmangle=auto,\
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-envinfo-$1/ \
+ https://github.com/tabrindle/envinfo/tags .*/archive.*/v?([\d\.]+).tar.gz checksum
 
-opts="searchmode=plain,pgpmode=none,component=webpack-cli" \
-https://registry.npmjs.org/webpack-cli \
-https://registry.npmjs.org/webpack-cli/-/webpack-cli-(3.[\d\.]*)@ARCHIVE_EXT@ ignore
+opts=\
+component=terser-webpack-plugin,\
+ctype=nodejs,\
+dversionmangle=auto,\
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-terser-webpack-plugin-$1/ \
+ https://github.com/webpack-contrib/terser-webpack-plugin/tags .*/archive.*/v?([\d\.]+).tar.gz checksum
 
-opts="searchmode=plain,pgpmode=none,component=import-local" \
-https://registry.npmjs.org/import-local \
-https://registry.npmjs.org/import-local/-/import-local-(2.[\d\.]*)@ARCHIVE_EXT@ ignore
+opts=\
+component=webpack-cli,\
+ctype=nodejs,\
+dversionmangle=auto,\
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-webpack-cli-$1/ \
+ https://github.com/webpack/webpack-cli/tags .*/archive.*/webpack-cli\@([\d\.]+).tar.gz checksum
 
-opts="searchmode=plain,pgpmode=none,component=v8-compile-cache" \
-https://registry.npmjs.org/v8-compile-cache \
-https://registry.npmjs.org/v8-compile-cache/-/v8-compile-cache-(2.[\d\.]*)@ARCHIVE_EXT@ ignore
+opts=\
+component=discoveryjs-json-ext,\
+ctype=nodejs,\
+dversionmangle=auto,\
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-json-ext-$1/ \
+ https://github.com/discoveryjs/json-ext/tags .*/archive.*/v?([\d\.]+).tar.gz checksum

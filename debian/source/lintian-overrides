@@ -1,11 +1,22 @@
-# false positive, example/test data
-source: source-is-missing examples/aggressive-merging/common.js line length is 778 characters (>512)
-source: source-is-missing test/cases/parsing/browserify/index.js line length is 736 characters (>512)
-source: very-long-line-length-in-source-file examples/aggressive-merging/common.js line length is 779 characters (>512)
-source: source-contains-prebuilt-javascript-object examples/aggressive-merging/common.js line length is 778 characters (>512)
-source: very-long-line-length-in-source-file test/cases/parsing/browserify/index.js line length is 737 characters (>512)
-source: source-contains-prebuilt-javascript-object test/cases/parsing/browserify/index.js line length is 736 characters (>512)
-# Uninstalled files
-source: source-contains-prebuilt-wasm-binary examples/wasm-simple/add.wasm
-source: source-contains-prebuilt-wasm-binary examples/wasm-simple/factorial.wasm
-source: source-contains-prebuilt-wasm-binary examples/wasm-simple/fibonacci.wasm
+# Same authors
+add-component-copyright terser-webpack-plugin *
+
+# False positive, example/test data
+source-is-missing [examples/*]
+source-is-missing [test/*]
+source-contains-prebuilt-javascript-object [examples/*]
+source-contains-prebuilt-javascript-object [test/*]
+very-long-line-length-in-source-file examples/*
+very-long-line-length-in-source-file test/*
+very-long-line-length-in-source-file terser-webpack-plugin/test/__snapshots__/*
+
+# Markdown
+very-long-line-length-in-source-file * [*.md:*]
+
+# Data
+source-is-missing [lib/optimize/ModuleConcatenationPlugin.js]
+source-is-missing [lib/util/semver.js]
+source-contains-prebuilt-javascript-object [lib/optimize/ModuleConcatenationPlugin.js]
+source-contains-prebuilt-javascript-object [lib/util/semver.js]
+very-long-line-length-in-source-file * [lib/optimize/ModuleConcatenationPlugin.js:*]
+very-long-line-length-in-source-file * [lib/util/semver.js:*]

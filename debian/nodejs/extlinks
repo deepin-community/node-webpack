@@ -1,0 +1,6 @@
+colorette
+commander
+tapable
+@types/node
+@types/rechoir
+webpack-merge

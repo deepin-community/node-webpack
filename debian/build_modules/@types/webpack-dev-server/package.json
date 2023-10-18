@@ -1,0 +1,5 @@
+{
+  "name": "@types/webpack-dev-server",
+  "version": "4.11.1",
+  "types": "types/lib/Server.d.ts"
+}

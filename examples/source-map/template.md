@@ -20,7 +20,7 @@ _{{webpack.config.js}}_
 _{{dist/bundle-source-map.js}}_
 ```
 
-```javascript
+```json
 _{{dist/bundle-source-map.js.map}}_
 ```
 
@@ -30,7 +30,7 @@ _{{dist/bundle-source-map.js.map}}_
 _{{dist/bundle-hidden-source-map.js}}_
 ```
 
-```javascript
+```json
 _{{dist/bundle-hidden-source-map.js.map}}_
 ```
 
@@ -42,7 +42,7 @@ _{{dist/bundle-inline-source-map.js}}_
 
 ## nosources-source-map.js.map
 
-```javascript
+```json
 _{{dist/bundle-nosources-source-map.js.map}}_
 ```
 
@@ -58,27 +58,27 @@ _{{dist/bundle-eval-source-map.js}}_
 _{{dist/bundle-eval.js}}_
 ```
 
-## cheap-eval-source-map.js
+## eval-cheap-source-map.js
 
 ```javascript
-_{{dist/bundle-cheap-eval-source-map.js}}_
+_{{dist/bundle-eval-cheap-source-map.js}}_
 ```
 
-## cheap-module-eval-source-map.js
+## eval-cheap-module-source-map.js
 
 ```javascript
-_{{dist/bundle-cheap-module-eval-source-map.js}}_
+_{{dist/bundle-eval-cheap-module-source-map.js}}_
 ```
 
 ## cheap-module-source-map.js.map
 
-```javascript
+```json
 _{{dist/bundle-cheap-module-source-map.js.map}}_
 ```
 
 ## cheap-source-map.js.map
 
-```javascript
+```json
 _{{dist/bundle-cheap-source-map.js.map}}_
 ```
 

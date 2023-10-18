@@ -1,0 +1,31 @@
+Description: Circumvent breaking change in node-terser which is required by node-terser-webpack plugin as reported in this bug (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1004471) as a hack fix pending a new upstream be uploaded for node-terser
+Author: Caleb Adepitan <calebpitan@gmail.com>
+--- a/terser-webpack-plugin/src/utils.js
++++ b/terser-webpack-plugin/src/utils.js
+@@ -264,8 +264,11 @@
+ 
+   // Let terser generate a SourceMap
+   if (sourceMap) {
+-    // @ts-ignore
+-    terserOptions.sourceMap = { asObject: true };
++    const pkg = require("terser/package.json")
++    if (parseInt(pkg.version) > 4) {
++      // @ts-ignore
++      terserOptions.sourceMap = { asObject: true };
++    }
+   }
+ 
+   /** @type {ExtractedComments} */
+@@ -299,7 +302,11 @@
+   }
+ 
+   const [[filename, code]] = Object.entries(input);
+-  const result = await minify({ [filename]: code }, terserOptions);
++  let result = minify({ [filename]: code }, terserOptions);
++
++  if (result instanceof Promise) {
++    result = await result
++  }
+ 
+   return {
+     code: /** @type {string} **/ (result.code),

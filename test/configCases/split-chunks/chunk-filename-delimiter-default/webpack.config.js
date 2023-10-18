@@ -1,4 +1,6 @@
+/** @type {import("../../../../").Configuration} */
 module.exports = {
+	mode: "development",
 	entry: {
 		main: "./index"
 	},
@@ -9,11 +11,18 @@ module.exports = {
 	output: {
 		filename: "[name].js",
 		chunkFilename: "[name].bundle.js",
-		jsonpFunction: "_load_chunk"
+		chunkLoadingGlobal: "_load_chunk"
 	},
 	optimization: {
 		splitChunks: {
-			minSize: 1
+			cacheGroups: {
+				async: {
+					chunks: "async",
+					reuseExistingChunk: true,
+					minSize: 1,
+					maxSize: 1
+				}
+			}
 		}
 	}
 };

@@ -1,1 +1,1 @@
-echo "Tests are disabled because jest is not packaged yet" 
+jest --ci -u `ls test/*unittest.js|grep -v -f debian/tests/test_excluded`

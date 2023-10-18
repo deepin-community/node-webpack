@@ -1,0 +1,1 @@
+perl -pe 's/export const /exports./g' index.js >index.cjs

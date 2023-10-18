@@ -1,8 +1,13 @@
-/**
+/*
  * This file was automatically generated.
  * DO NOT MODIFY BY HAND.
  * Run `yarn special-lint-fix` to update
  */
+
+/**
+ * Algorithm used for generation the hash (see node.js crypto package).
+ */
+export type HashFunction = string | typeof import("../../lib/util/Hash");
 
 export interface HashedModuleIdsPluginOptions {
 	/**
@@ -18,7 +23,7 @@ export interface HashedModuleIdsPluginOptions {
 	 */
 	hashDigestLength?: number;
 	/**
-	 * The hashing algorithm to use, defaults to 'md5'. All functions from Node.JS' crypto.createHash are supported.
+	 * The hashing algorithm to use, defaults to 'md4'. All functions from Node.JS' crypto.createHash are supported.
 	 */
-	hashFunction?: string;
+	hashFunction?: HashFunction;
 }

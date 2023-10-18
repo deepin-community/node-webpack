@@ -1,6 +1,7 @@
 var path = require("path");
 var webpack = require("../../../../");
 
+/** @type {import("../../../../").Configuration} */
 module.exports = {
 	entry: ["./a", "./b", "./_d", "./_e", "./f", "./g.abc", "./h"],
 	resolve: {
@@ -35,7 +36,8 @@ module.exports = {
 			path: path.resolve(
 				__dirname,
 				"../../../js/config/dll-plugin/manifest0.json"
-			)
+			),
+			entryOnly: false
 		})
 	]
 };

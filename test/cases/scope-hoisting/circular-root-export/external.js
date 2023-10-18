@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === "production") {
 	expect(b()).toBe("b");
 	expect(Object(c).b()).toBe("b");
 }
-expect(d).toBe(undefined);
+expect(() => d).toThrow();
 
 export function test() {
 	expect(d).toBe(d);

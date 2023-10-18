@@ -1,0 +1,82 @@
+Description: fix webpack-cli path
+Author: Ayoyimika Ajibade <ayoyimikaajibade@gmail.com>
+Forwarded: not-needed
+Reviewed-By: Yadd <yadd@debian.org>
+Last-Update: 2022-11-18
+
+--- a/bin/webpack.js
++++ b/bin/webpack.js
+@@ -44,7 +44,7 @@
+ 	do {
+ 		try {
+ 			if (
+-				fs.statSync(path.join(dir, "node_modules", packageName)).isDirectory()
++				fs.statSync('/usr/share/nodejs/webpack-cli/').isDirectory()
+ 			) {
+ 				return true;
+ 			}
+@@ -62,7 +62,7 @@
+  */
+ const runCli = cli => {
+ 	const path = require("path");
+-	const pkgPath = require.resolve(`${cli.package}/package.json`);
++	const pkgPath = require.resolve(`/usr/share/nodejs/${cli.package}/package.json`);
+ 	// eslint-disable-next-line node/no-missing-require
+ 	const pkg = require(pkgPath);
+ 	// eslint-disable-next-line node/no-missing-require
+--- a/webpack-cli/packages/webpack-cli/src/webpack-cli.ts
++++ b/webpack-cli/packages/webpack-cli/src/webpack-cli.ts
+@@ -62,6 +62,9 @@
+ const WEBPACK_PACKAGE = process.env.WEBPACK_PACKAGE || "webpack";
+ const WEBPACK_DEV_SERVER_PACKAGE = process.env.WEBPACK_DEV_SERVER_PACKAGE || "webpack-dev-server";
+ 
++// @ts-ignore
++const isDebianManaged = () => Boolean(process.env.DEB_HOST_ARCH)
++
+ interface Information {
+   Binaries?: string[];
+   Browsers?: string[];
+@@ -189,7 +192,9 @@
+     if (!availableInstallers.length) {
+       this.logger.error("No package manager found.");
+ 
+-      process.exit(2);
++      if (!isDebianManaged()) {
++        process.exit(2);
++      }
+     }
+ 
+     return availableInstallers;
+@@ -244,7 +249,9 @@
+     } catch (e) {
+       this.logger.error("No package manager found.");
+ 
+-      process.exit(2);
++      if (!isDebianManaged()) {
++        process.exit(2);
++      }
+     }
+   }
+ 
+@@ -254,7 +261,9 @@
+     if (!packageManager) {
+       this.logger.error("Can't find package manager");
+ 
+-      process.exit(2);
++      if (!isDebianManaged()) {
++        process.exit(2);
++      }
+     }
+ 
+     if (options.preMessage) {
+@@ -528,6 +537,10 @@
+           skipInstallation = true;
+         }
+ 
++        if (!isDebianManaged()) {
++          skipInstallation = true
++        }
++
+         if (skipInstallation) {
+           continue;
+         }

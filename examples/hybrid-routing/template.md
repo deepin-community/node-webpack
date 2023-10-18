@@ -32,10 +32,10 @@ _{{router.js}}_
 _{{pageA.html}}_
 ```
 
-# dist/pageA~pageB.chunk.js
+# dist/router_js.bundle.js
 
 ```javascript
-_{{dist/pageA~pageB.chunk.js}}_
+_{{dist/router_js.bundle.js}}_
 ```
 
 # dist/pageA.bundle.js
@@ -44,10 +44,10 @@ _{{dist/pageA~pageB.chunk.js}}_
 _{{dist/pageA.bundle.js}}_
 ```
 
-# dist/aPage.chunk.js
+# dist/aPage.bundle.js
 
 ```javascript
-_{{dist/aPage.chunk.js}}_
+_{{dist/aPage.bundle.js}}_
 ```
 
 # Info
