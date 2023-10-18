@@ -1,8 +1,6 @@
-/* globals describe it beforeEach */
 "use strict";
 
 const NormalModule = require("../lib/NormalModule");
-const NullDependency = require("../lib/dependencies/NullDependency");
 const SourceMapSource = require("webpack-sources").SourceMapSource;
 const OriginalSource = require("webpack-sources").OriginalSource;
 const RawSource = require("webpack-sources").RawSource;
@@ -38,6 +36,7 @@ describe("NormalModule", () => {
 		normalModule.buildInfo = {
 			cacheable: true
 		};
+		normalModule.useSimpleSourceMap = true;
 	});
 	describe("#identifier", () => {
 		it("returns an identifier for this module", () => {
@@ -45,9 +44,7 @@ describe("NormalModule", () => {
 		});
 		it("returns an identifier from toString", () => {
 			normalModule.debugId = 1000;
-			expect(normalModule.toString()).toBe("Module[1000]");
-			normalModule.id = 1;
-			expect(normalModule.toString()).toBe("Module[1]");
+			expect(normalModule.toString()).toBe("Module[1000: /some/request]");
 		});
 	});
 
@@ -94,6 +91,7 @@ describe("NormalModule", () => {
 		});
 		describe("given a userRequest containing query parameters", () => {
 			it("ignores paths in query parameters", () => {
+				// cspell:word testpath
 				userRequest =
 					"F:\\some\\context\\loader?query=foo\\bar&otherPath=testpath/other";
 				normalModule = new NormalModule({
@@ -149,25 +147,47 @@ describe("NormalModule", () => {
 		});
 		describe("given no sourcemap", () => {
 			it("returns a RawSource", () => {
-				expect(normalModule.createSourceForAsset(name, content)).toBeInstanceOf(
-					RawSource
-				);
+				expect(
+					normalModule.createSourceForAsset("/", name, content)
+				).toBeInstanceOf(RawSource);
 			});
 		});
 		describe("given a string as the sourcemap", () => {
 			it("returns a OriginalSource", () => {
 				expect(
-					normalModule.createSourceForAsset(name, content, sourceMap)
+					normalModule.createSourceForAsset("/", name, content, sourceMap)
 				).toBeInstanceOf(OriginalSource);
 			});
 		});
-		describe("given a some other kind of sourcemap", () => {
+		describe("given a some other kind of sourcemap (source maps disabled)", () => {
+			beforeEach(() => {
+				sourceMap = () => {};
+				normalModule.useSimpleSourceMap = false;
+			});
+			it("returns a SourceMapSource", () => {
+				expect(
+					normalModule.createSourceForAsset("/", name, content, sourceMap)
+				).toBeInstanceOf(RawSource);
+			});
+		});
+		describe("given a some other kind of sourcemap (simple source maps enabled)", () => {
 			beforeEach(() => {
 				sourceMap = () => {};
 			});
 			it("returns a SourceMapSource", () => {
 				expect(
-					normalModule.createSourceForAsset(name, content, sourceMap)
+					normalModule.createSourceForAsset("/", name, content, sourceMap)
+				).toBeInstanceOf(RawSource);
+			});
+		});
+		describe("given a some other kind of sourcemap (source maps enabled)", () => {
+			beforeEach(() => {
+				sourceMap = () => {};
+				normalModule.useSourceMap = true;
+			});
+			it("returns a SourceMapSource", () => {
+				expect(
+					normalModule.createSourceForAsset("/", name, content, sourceMap)
 				).toBeInstanceOf(SourceMapSource);
 			});
 		});
@@ -180,93 +200,6 @@ describe("NormalModule", () => {
 		});
 		it("returns an original Source", () => {
 			expect(normalModule.originalSource()).toBe(normalModule._source);
-		});
-	});
-
-	describe("#hasDependencies", () => {
-		it("returns true if has dependencies", () => {
-			normalModule.addDependency(new NullDependency());
-			expect(normalModule.hasDependencies()).toBe(true);
-		});
-		it("returns false if has dependencies", () => {
-			expect(normalModule.hasDependencies()).toBe(false);
-		});
-	});
-	describe("#needRebuild", () => {
-		let fileTimestamps;
-		let contextTimestamps;
-		let fileDependencies;
-		let contextDependencies;
-		let fileA;
-		let fileB;
-
-		function setDeps(fileDependencies, contextDependencies) {
-			normalModule.buildInfo.fileDependencies = fileDependencies;
-			normalModule.buildInfo.contextDependencies = contextDependencies;
-		}
-
-		beforeEach(() => {
-			fileA = "fileA";
-			fileB = "fileB";
-			fileDependencies = [fileA, fileB];
-			contextDependencies = [fileA, fileB];
-			fileTimestamps = new Map([
-				[fileA, 1],
-				[fileB, 1]
-			]);
-			contextTimestamps = new Map([
-				[fileA, 1],
-				[fileB, 1]
-			]);
-			normalModule.buildTimestamp = 2;
-			setDeps(fileDependencies, contextDependencies);
-		});
-		describe("given all timestamps are older than the buildTimestamp", () => {
-			it("returns false", () => {
-				expect(
-					normalModule.needRebuild(fileTimestamps, contextTimestamps)
-				).toBe(false);
-			});
-		});
-		describe("given a file timestamp is newer than the buildTimestamp", () => {
-			beforeEach(() => {
-				fileTimestamps.set(fileA, 3);
-			});
-			it("returns true", () => {
-				expect(
-					normalModule.needRebuild(fileTimestamps, contextTimestamps)
-				).toBe(true);
-			});
-		});
-		describe("given a no file timestamp exists", () => {
-			beforeEach(() => {
-				fileTimestamps = new Map();
-			});
-			it("returns true", () => {
-				expect(
-					normalModule.needRebuild(fileTimestamps, contextTimestamps)
-				).toBe(true);
-			});
-		});
-		describe("given a context timestamp is newer than the buildTimestamp", () => {
-			beforeEach(() => {
-				contextTimestamps.set(fileA, 3);
-			});
-			it("returns true", () => {
-				expect(
-					normalModule.needRebuild(fileTimestamps, contextTimestamps)
-				).toBe(true);
-			});
-		});
-		describe("given a no context timestamp exists", () => {
-			beforeEach(() => {
-				contextTimestamps = new Map();
-			});
-			it("returns true", () => {
-				expect(
-					normalModule.needRebuild(fileTimestamps, contextTimestamps)
-				).toBe(true);
-			});
 		});
 	});
 
@@ -352,7 +285,7 @@ describe("NormalModule", () => {
 				});
 			});
 			describe("that is an array", () => {
-				describe("of strings and or regexs", () => {
+				describe("of strings and or regexps", () => {
 					let someRules;
 					beforeEach(() => {
 						someRules = ["some rule", /some rule1/, "some rule2"];

@@ -1,4 +1,4 @@
-/**
+/*
  * This file was automatically generated.
  * DO NOT MODIFY BY HAND.
  * Run `yarn special-lint-fix` to update
@@ -6,11 +6,15 @@
 
 export interface LimitChunkCountPluginOptions {
 	/**
-	 * Limit the maximum number of chunks using a value greater greater than or equal to 1
+	 * Constant overhead for a chunk.
 	 */
-	maxChunks?: number;
+	chunkOverhead?: number;
 	/**
-	 * Set a minimum chunk size
+	 * Multiplicator for initial chunks.
 	 */
-	minChunkSize?: number;
+	entryChunkMultiplicator?: number;
+	/**
+	 * Limit the maximum number of chunks using a value greater greater than or equal to 1.
+	 */
+	maxChunks: number;
 }

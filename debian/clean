@@ -1,0 +1,5 @@
+discoveryjs-json-ext/dist/*
+terser-webpack-plugin/dist/
+webpack-cli/node_modules/
+webpack-cli/packages/*/lib/
+webpack-cli/packages/*/tsconfig.tsbuildinfo

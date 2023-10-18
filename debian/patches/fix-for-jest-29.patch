@@ -1,0 +1,20 @@
+Description: fix for jest >= 29
+ Keep old snaphot format.
+ See https://jestjs.io/docs/upgrading-to-jest29
+Author: Yadd <yadd@debian.org>
+Forwarded: no
+Last-Update: 2022-09-29
+
+--- a/package.json
++++ b/package.json
+@@ -189,6 +189,10 @@
+     ]
+   },
+   "jest": {
++    "snapshotFormat": {
++      "escapeString": true,
++      "printBasicPrototype": true
++    },
+     "forceExit": true,
+     "setupFilesAfterEnv": [
+       "<rootDir>/test/setupTestFramework.js"

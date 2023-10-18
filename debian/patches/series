@@ -1,3 +1,6 @@
-use-uglifyjs-plugin.patch
-fix-for-mkdirp.diff
-fix-for-schema-utils-3.diff
+update-importing-eslint-scope.patch
+dont-require-wast-loader.patch
+webpack-cli-path.patch
+terser-webpack-plugin.patch
+fix-for-jest-29.patch
+fix-tsconfig.patch

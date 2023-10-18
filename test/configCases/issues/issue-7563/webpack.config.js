@@ -1,10 +1,10 @@
 "use strict";
 
-// Have to test [hash] and [chunkhash] separately to avoid
-// "Cannot use [chunkhash] or [contenthash] for chunk in 'bundle1.[hash].[hash:16].[chunkhash].[chunkhash:16].[name].[id].[query].js' (use [hash] instead)"
-var testAllButHash = "[chunkhash].[chunkhash:16].[name].[id].[query]";
-var testHash = "[hash].[hash:16]";
+// [fullhash] and [chunkhash] must be used separately
+const testAllButHash = "[chunkhash].[chunkhash:16].[name].[id].[query]";
+const testHash = "[fullhash].[fullhash:16]";
 
+/** @type {import("../../../../").Configuration[]} */
 module.exports = [
 	{
 		name: "webworker-all",

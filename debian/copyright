@@ -1,20 +1,43 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: webpack
 Upstream-Contact: https://github.com/webpack/webpack/issues
-Source: https://github.com/webpack/webpack
+Source: https://github.com/webpack/webpack/tags
+ https://github.com/webpack-contrib/terser-webpack-plugin/tags
+ https://github.com/tabrindle/envinfo/tags
+ https://github.com/webpack/webpack-cli/tags
+ https://github.com/discoveryjs/json-ext/tags
+Files-Excluded: .husky
+ examples/build-http/webpack.lock.data
+ test/statsCases
+Files-Excluded-discoveryjs-json-ext: benchmarks
 
 Files: *
-Copyright: 2017 Tobias Koppers @sokra
+Copyright: JS Foundation and other contributors
 License: Expat
+
+Files: assembly/hash/xxhash64.asm.ts
+Copyright: 2016 Stephan Brumme
+License: Zlib
 
 Files: debian/*
 Copyright: 2017 Pirate Praveen <praveen@debian.org>
+ 2020-2022 Yadd <yadd@debian.org>
 License: Expat
 
-Files: debian/buid_modules/interpret/*
-Copyright: 2014-2018 Tyler Kellen <tyler@sleekcode.net>
- 2014-2018 Blaine Bublitz <blaine.bublitz@gmail.com>
- 2014-2018 Eric Schoffstall <yo@contra.io>
+Files: debian/build_modules/@types/*
+Copyright: Microsoft Corporation
+License: Expat
+
+Files: discoveryjs-json-ext/*
+Copyright: 2020 Roman Dvornov <rdvornov@gmail.com>
+License: Expat
+
+Files: envinfo/*
+Copyright: 2018 Trevor Brindle
+License: Expat
+
+Files: webpack-cli/*
+Copyright: JS Foundation and other contributors
 License: Expat
 
 License: Expat
@@ -37,3 +60,18 @@ License: Expat
  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+License: Zlib
+ This software is provided 'as-is', without any express or implied warranty.
+ In no event will the author be held liable for any damages arising from the
+ use of this software.
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it
+ freely, subject to the following restrictions:
+ .
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software.
+  2. If you use this software in a product, an acknowledgment in the product
+     documentation would be appreciated but is not required.
+  3. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.

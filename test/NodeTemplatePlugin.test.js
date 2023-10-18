@@ -1,12 +1,14 @@
-/* global describe, it */
 "use strict";
 
-const path = require("path");
-const webpack = require("../lib/webpack");
+require("./helpers/warmup-webpack");
 
+const path = require("path");
+
+// cspell:word nodetest
 describe("NodeTemplatePlugin", () => {
 	jest.setTimeout(20000);
 	it("should compile and run a simple module", done => {
+		const webpack = require("..");
 		webpack(
 			{
 				mode: "production",
@@ -15,7 +17,7 @@ describe("NodeTemplatePlugin", () => {
 				output: {
 					path: path.join(__dirname, "js", "NodeTemplatePlugin"),
 					filename: "result.js",
-					chunkFilename: "[hash].result.[id].js",
+					chunkFilename: "[fullhash].result.[id].js",
 					library: "abc",
 					libraryTarget: "commonjs"
 				},
@@ -43,6 +45,7 @@ describe("NodeTemplatePlugin", () => {
 	});
 
 	it("should compile and run a simple module in single mode", done => {
+		const webpack = require("..");
 		webpack(
 			{
 				mode: "production",
@@ -51,7 +54,7 @@ describe("NodeTemplatePlugin", () => {
 				output: {
 					path: path.join(__dirname, "js", "NodeTemplatePluginSingle"),
 					filename: "result2.js",
-					chunkFilename: "[hash].result2.[id].js",
+					chunkFilename: "[fullhash].result2.[id].js",
 					library: "def",
 					libraryTarget: "umd",
 					auxiliaryComment: "test"

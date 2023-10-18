@@ -1,0 +1,14 @@
+Description: fix tsconfig
+Author: Yadd <yadd@debian.org>
+Forwarded: not-needed
+Last-Update: 2022-11-18
+
+--- a/webpack-cli/tsconfig.json
++++ b/webpack-cli/tsconfig.json
+@@ -1,5 +1,5 @@
+ {
+-  "exclude": ["node_modules", "lib", "__tests__"],
++  "exclude": ["lib", "__tests__"],
+   "files": [],
+   "compilerOptions": {
+     "skipLibCheck": true,

@@ -1,10 +1,9 @@
 "use strict";
 
 const path = require("path");
-const fs = require("fs");
-const mkdirp = require("mkdirp");
+const fs = require("graceful-fs");
 
-const webpack = require("../");
+const webpack = require("..");
 
 describe("HotModuleReplacementPlugin", () => {
 	jest.setTimeout(20000);
@@ -34,7 +33,9 @@ describe("HotModuleReplacementPlugin", () => {
 			"records.json"
 		);
 		try {
-			mkdirp.sync(path.join(__dirname, "js", "HotModuleReplacementPlugin"));
+			fs.mkdirSync(path.join(__dirname, "js", "HotModuleReplacementPlugin"), {
+				recursive: true
+			});
 		} catch (e) {
 			// empty
 		}
@@ -96,35 +97,97 @@ describe("HotModuleReplacementPlugin", () => {
 				});
 			});
 		});
-	});
+	}, 120000);
+
+	it("output.clean=true should keep 1 last update", done => {
+		const outputPath = path.join(__dirname, "js", "HotModuleReplacementPlugin");
+		const entryFile = path.join(outputPath, "entry.js");
+		const recordsFile = path.join(outputPath, "records.json");
+		let step = 0;
+		let firstUpdate;
+		try {
+			fs.mkdirSync(outputPath, { recursive: true });
+		} catch (e) {
+			// empty
+		}
+		fs.writeFileSync(entryFile, `${++step}`, "utf-8");
+		const updates = new Set();
+		const hasFile = file => {
+			try {
+				fs.statSync(path.join(outputPath, file));
+				return true;
+			} catch (err) {
+				return false;
+			}
+		};
+		const compiler = webpack({
+			mode: "development",
+			cache: false,
+			entry: {
+				0: entryFile
+			},
+			recordsPath: recordsFile,
+			output: {
+				path: outputPath,
+				clean: true
+			},
+			plugins: [new webpack.HotModuleReplacementPlugin()]
+		});
+		const callback = (err, stats) => {
+			if (err) return done(err);
+			const jsonStats = stats.toJson();
+			const hash = jsonStats.hash;
+			const hmrUpdateMainFileName = `0.${hash}.hot-update.json`;
+
+			switch (step) {
+				case 1:
+					expect(updates.size).toBe(0);
+					firstUpdate = hmrUpdateMainFileName;
+					break;
+				case 2:
+					expect(updates.size).toBe(1);
+					expect(updates.has(firstUpdate)).toBe(true);
+					expect(hasFile(firstUpdate)).toBe(true);
+					break;
+				case 3:
+					expect(updates.size).toBe(2);
+					for (const file of updates) {
+						expect(hasFile(file)).toBe(true);
+					}
+					return setTimeout(() => {
+						fs.writeFileSync(entryFile, `${++step}`, "utf-8");
+						compiler.run(err => {
+							if (err) return done(err);
+							for (const file of updates) {
+								expect(hasFile(file)).toBe(false);
+							}
+							done();
+						});
+					}, 10100);
+			}
+
+			updates.add(hmrUpdateMainFileName);
+			fs.writeFileSync(entryFile, `${++step}`, "utf-8");
+			compiler.run(callback);
+		};
+
+		compiler.run(callback);
+	}, 20000);
 
 	it("should correct working when entry is Object and key is a number", done => {
-		const entryFile = path.join(
-			__dirname,
-			"js",
-			"HotModuleReplacementPlugin",
-			"entry.js"
-		);
+		const outputPath = path.join(__dirname, "js", "HotModuleReplacementPlugin");
+		const entryFile = path.join(outputPath, "entry.js");
 		const statsFile3 = path.join(
-			__dirname,
-			"js",
-			"HotModuleReplacementPlugin",
+			outputPath,
 			"HotModuleReplacementPlugin.test.stats3.txt"
 		);
 		const statsFile4 = path.join(
-			__dirname,
-			"js",
-			"HotModuleReplacementPlugin",
+			outputPath,
 			"HotModuleReplacementPlugin.test.stats4.txt"
 		);
-		const recordsFile = path.join(
-			__dirname,
-			"js",
-			"HotModuleReplacementPlugin",
-			"records.json"
-		);
+		const recordsFile = path.join(outputPath, "records.json");
 		try {
-			mkdirp.sync(path.join(__dirname, "js", "HotModuleReplacementPlugin"));
+			fs.mkdirSync(outputPath, { recursive: true });
 		} catch (e) {
 			// empty
 		}
@@ -137,15 +200,15 @@ describe("HotModuleReplacementPlugin", () => {
 			mode: "development",
 			cache: false,
 			entry: {
-				"0": entryFile
+				0: entryFile
 			},
 			recordsPath: recordsFile,
 			output: {
-				path: path.join(__dirname, "js", "HotModuleReplacementPlugin")
+				path: outputPath
 			},
 			plugins: [new webpack.HotModuleReplacementPlugin()],
 			optimization: {
-				namedChunks: true
+				chunkIds: "named"
 			}
 		});
 		fs.writeFileSync(entryFile, "1", "utf-8");
@@ -153,7 +216,7 @@ describe("HotModuleReplacementPlugin", () => {
 			if (err) throw err;
 			const jsonStats = stats.toJson();
 			const hash = jsonStats.hash;
-			const trunkName = Object.keys(jsonStats.assetsByChunkName)[0];
+			const chunkName = Object.keys(jsonStats.assetsByChunkName)[0];
 			fs.writeFileSync(statsFile3, stats.toString());
 			compiler.run((err, stats) => {
 				if (err) throw err;
@@ -163,9 +226,12 @@ describe("HotModuleReplacementPlugin", () => {
 					if (err) throw err;
 					fs.writeFileSync(statsFile3, stats.toString());
 					const result = JSON.parse(
-						stats.compilation.assets[`${hash}.hot-update.json`].source()
-					)["c"][`${trunkName}`];
-					expect(result).toBe(true);
+						fs.readFileSync(
+							path.join(outputPath, `0.${hash}.hot-update.json`),
+							"utf-8"
+						)
+					)["c"];
+					expect(result).toEqual([chunkName]);
 					done();
 				});
 			});
@@ -199,8 +265,11 @@ describe("HotModuleReplacementPlugin", () => {
 			"records.json"
 		);
 		try {
-			mkdirp.sync(
-				path.join(__dirname, "js", "HotModuleReplacementPlugin", "[name]")
+			fs.mkdirSync(
+				path.join(__dirname, "js", "HotModuleReplacementPlugin", "[name]"),
+				{
+					recursive: true
+				}
 			);
 		} catch (e) {
 			// empty
@@ -226,7 +295,7 @@ describe("HotModuleReplacementPlugin", () => {
 			},
 			plugins: [new webpack.HotModuleReplacementPlugin()],
 			optimization: {
-				namedChunks: true
+				chunkIds: "named"
 			}
 		});
 		fs.writeFileSync(entryFile, "1", "utf-8");

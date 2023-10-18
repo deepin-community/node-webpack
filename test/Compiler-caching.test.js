@@ -1,46 +1,49 @@
-/* globals describe, it */
 "use strict";
 
+require("./helpers/warmup-webpack");
+
 const path = require("path");
-const fs = require("fs");
+const fs = require("graceful-fs");
 const rimraf = require("rimraf");
 
-const webpack = require("../");
-const WebpackOptionsDefaulter = require("../lib/WebpackOptionsDefaulter");
 let fixtureCount = 0;
 
 describe("Compiler (caching)", () => {
 	jest.setTimeout(15000);
 
 	function compile(entry, options, callback) {
+		const webpack = require("..");
+		options = webpack.config.getNormalizedWebpackOptions(options);
 		options.mode = "none";
-		options = new WebpackOptionsDefaulter().process(options);
 		options.cache = true;
 		options.entry = entry;
+		options.optimization.moduleIds = "natural";
 		options.optimization.minimize = false;
 		options.context = path.join(__dirname, "fixtures");
 		options.output.path = "/";
 		options.output.filename = "bundle.js";
 		options.output.pathinfo = true;
 		const logs = {
-			mkdirp: [],
+			mkdir: [],
 			writeFile: []
 		};
 
 		const c = webpack(options);
 		const files = {};
 		c.outputFileSystem = {
-			join() {
-				return [].join.call(arguments, "/").replace(/\/+/g, "/");
-			},
-			mkdirp(path, callback) {
-				logs.mkdirp.push(path);
-				callback();
+			mkdir(path, callback) {
+				logs.mkdir.push(path);
+				const err = new Error();
+				err.code = "EEXIST";
+				callback(err);
 			},
 			writeFile(name, content, callback) {
 				logs.writeFile.push(name, content);
 				files[name] = content.toString("utf-8");
 				callback();
+			},
+			stat(path, callback) {
+				callback(new Error("ENOENT"));
 			}
 		};
 		c.hooks.compilation.tap(
@@ -109,12 +112,8 @@ describe("Compiler (caching)", () => {
 
 		// Copy over file since we"ll be modifying some of them
 		fs.mkdirSync(fixturePath);
-		fs.createReadStream(path.join(__dirname, "fixtures", "a.js")).pipe(
-			fs.createWriteStream(aFilepath)
-		);
-		fs.createReadStream(path.join(__dirname, "fixtures", "c.js")).pipe(
-			fs.createWriteStream(cFilepath)
-		);
+		fs.copyFileSync(path.join(__dirname, "fixtures", "a.js"), aFilepath);
+		fs.copyFileSync(path.join(__dirname, "fixtures", "c.js"), cFilepath);
 
 		fixtureCount++;
 		return {

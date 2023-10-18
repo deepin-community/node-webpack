@@ -1,3 +1,249 @@
+node-webpack (5.76.1+dfsg1+~cs17.16.16-1) unstable; urgency=medium
+
+  * Team upload
+  * Install webpack-cli
+  * Update lintian override info format in d/source/lintian-overrides
+    on line 5-8, 14, 17-22.
+  * Update standards version to 4.6.2, no changes needed.
+  * Exclude discoveryjs-json-ext/benchmarks from import
+  * New upstream version (Closes: #1032904, CVE-2023-28154), updates:
+    +webpack from 5.75.0 to 5.76.1
+    + envinfo from 7.8.0 to 7.8.1
+    + terser-webpack-plugin from 5.3.6 to 5.3.7
+    + @webpack-cli/configtest from 2.0.0 to 2.0.1
+
+ -- Yadd <yadd@debian.org>  Tue, 14 Mar 2023 06:48:56 +0400
+
+node-webpack (5.75.0+dfsg+~cs17.16.14-1) unstable; urgency=medium
+
+  * Team upload
+  * Refresh patches
+  * Build-depends: node-webpack-merge >= 5.8.0~
+  * Embed envinfo, @discoveryjs/json-ext
+  * Fix webpack-cli source
+  * New upstream version 5.75.0+dfsg+~cs17.16.14
+  * Build @discoveryjs/json-ext with rollup
+  * Embed some typescript declarations to build webpack-cli
+  * Build webpack-cli
+  * Update copyright
+
+ -- Yadd <yadd@debian.org>  Fri, 18 Nov 2022 18:34:14 +0100
+
+node-webpack (5.75.0+dfsg+~cs10.3.6-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 5.75.0+dfsg+~cs10.3.6
+  * Unfuzz patches
+
+ -- Yadd <yadd@debian.org>  Fri, 18 Nov 2022 11:28:33 +0100
+
+node-webpack (5.74.0+repack1+~cs9.13.6-1) unstable; urgency=medium
+
+  * Team upload
+  * Drop component es-module-lexer and use new package
+  * New upstream version 5.74.0+repack1+~cs9.13.6
+  * Use dh_nodejs_autodocs
+  * Drop old node_modules link
+
+ -- Yadd <yadd@debian.org>  Mon, 14 Nov 2022 06:25:51 +0100
+
+node-webpack (5.74.0+dfsg+~cs10.13.6-4) unstable; urgency=medium
+
+  * Team upload
+  * Reupload
+
+ -- Yadd <yadd@debian.org>  Fri, 30 Sep 2022 06:30:26 +0200
+
+node-webpack (5.74.0+dfsg+~cs10.13.6-3) unstable; urgency=medium
+
+  * Team upload
+  * Add fix for jest >= 29
+
+ -- Yadd <yadd@debian.org>  Thu, 29 Sep 2022 22:20:46 +0200
+
+node-webpack (5.74.0+dfsg+~cs10.13.6-2) unstable; urgency=medium
+
+  * Team upload
+  * Back to unstable
+
+ -- Yadd <yadd@debian.org>  Thu, 11 Aug 2022 20:52:33 +0200
+
+node-webpack (5.74.0+dfsg+~cs10.13.6-1) experimental; urgency=medium
+
+  * Team upload
+  * New upstream version 5.74.0+dfsg+~cs10.13.6
+  * Refresh patches
+
+ -- Yadd <yadd@debian.org>  Thu, 11 Aug 2022 16:50:03 +0200
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-13) unstable; urgency=medium
+
+  * Team upload
+  * Declare compliance with policy 4.6.1
+  * Update nodejs dependency to nodejs:any
+  * Use terser, not uglifyjs.terser
+
+ -- Yadd <yadd@debian.org>  Tue, 07 Jun 2022 10:00:40 +0200
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-12) unstable; urgency=medium
+
+  * Add node-colorette as dependency
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 23 May 2022 00:05:22 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-11) unstable; urgency=medium
+
+  * Add node-rechoir as dependency
+
+ -- Pirate Praveen <praveen@debian.org>  Sun, 22 May 2022 23:41:13 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-10) unstable; urgency=medium
+
+  * Add dependency on node-interpret
+
+ -- Pirate Praveen <praveen@debian.org>  Sun, 22 May 2022 23:26:53 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-9) unstable; urgency=medium
+
+  * Remove <!nocheck> from Depends (added by mistake)
+  * Update minimum version of node-tapable to 2.0~
+
+ -- Pirate Praveen <praveen@debian.org>  Sat, 21 May 2022 22:48:26 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-8) unstable; urgency=medium
+
+  * Add node-import-local as dependency
+
+ -- Pirate Praveen <praveen@debian.org>  Sat, 21 May 2022 22:29:52 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-7) unstable; urgency=medium
+
+  * Drop embedded old version of enhanced-resolve
+
+ -- Pirate Praveen <praveen@debian.org>  Sat, 21 May 2022 16:30:11 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-6) unstable; urgency=medium
+
+  * Add Breaks: node-mini-css-extract-plugin (<< 2.0~)
+
+ -- Pirate Praveen <praveen@debian.org>  Sat, 21 May 2022 13:35:08 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-5) unstable; urgency=medium
+
+  * Reupload to unstable
+
+  [ Yadd ]
+  * Update standards version to 4.6.0, no changes needed.
+  * Fix filenamemangle
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 20 May 2022 22:10:06 +0530
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-4) experimental; urgency=medium
+
+  [ Yadd ]
+  * Wrap long lines in changelog entries: 5.65.0+dfsg+~cs9.20.9-3.
+  * #982766 fixed in 5.58.2+~cs5.11.7-1
+
+  [ Ayoyimika Ajibade ]
+  * update how eslint-scope is required
+
+ -- Ayoyimika Ajibade <ayoyimikaajibade@gmail.com>  Tue, 15 Mar 2022 07:10:29 +0100
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-3) experimental; urgency=medium
+
+  * Team upload.
+
+  [ Caleb Adepitan ]
+  * Apply version constraint to node-commander
+  * Patch terser-webpack-plugin to circumvent breaking change in dependency,
+    node-terser
+  * Update control file
+  * Update salsa-ci.yml to build on experimental
+
+  [ Yadd ]
+  * Update copyright
+  * Update lintian overrides
+
+ -- Caleb Adepitan <adepitancaleb@gmail.com>  Wed, 16 Feb 2022 08:32:05 +0100
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-2) experimental; urgency=medium
+
+  * Team upload
+  * ensure packages not installed in upstream code
+
+ -- Ayoyimika Ajibade <ayoyimikaajibade@gmail.com>  Thu, 30 Dec 2021 13:04:02 +0100
+
+node-webpack (5.65.0+dfsg+~cs9.20.9-1) experimental; urgency=medium
+
+  [ Yadd ]
+  * Team upload
+  * Exclude non DFSG files from import (Closes: #996836) and repack
+  * Disable es-module-lexer and don't install it for now
+  * Clean lintian overrides
+  * Update nodejs dependency to nodejs:any
+
+  [ Ayoyimika Ajibade ]
+  * embed webpack-cli
+  * New upstream version 5.65.0+dfsg+~cs9.20.9
+  * disable failing test due to error from jest-resolve
+  * Fix webpack-cli path
+
+ -- Ayoyimika Ajibade <ayoyimikaajibade@gmail.com>  Wed, 22 Dec 2021 14:01:35 +0100
+
+node-webpack (5.58.2+~cs5.11.7-2) experimental; urgency=medium
+
+  * Team upload
+  * Build terser-webpack-plugin
+  * Require node-webpack-sources ≥ 3.2.1~
+
+ -- Yadd <yadd@debian.org>  Tue, 19 Oct 2021 15:09:11 +0200
+
+node-webpack (5.58.2+~cs5.11.7-1) experimental; urgency=medium
+
+  * Team upload
+  * Update standards version to 4.6.0, no changes needed.
+  * Add ctype=nodejs to component(s)
+  * Fix filenamemangle
+  * Fix GitHub tags regex
+  * Remove all embedded components
+  * Embed es-module-lexer terser-webpack-plugin
+  * New upstream version 5.58.2+~cs5.11.7
+  * Drop use-uglifyjs-plugin.patch, add dont-require-wast-loader.patch
+    (Closes: #982766)
+  * Drop husky hook
+  * Update test excluded due to missing dependencies
+  * Update dependencies
+
+ -- Yadd <yadd@debian.org>  Sun, 17 Oct 2021 19:08:18 +0200
+
+node-webpack (5.6.0+~cs6.4.0-1~exp2) experimental; urgency=medium
+
+  * Team upload
+  * Enable part of upstream test using jest
+
+ -- Xavier Guimard <yadd@debian.org>  Fri, 20 Nov 2020 17:54:12 +0100
+
+node-webpack (5.6.0+~cs6.4.0-1~exp1) experimental; urgency=medium
+
+  * Team upload
+  * Embed glob-to-regexp @webpack-cli/info @webpack-cli/serve envinfo
+  * New upstream version 5.6.0+~cs6.4.0
+  * refresh patches
+  * Update dependencies
+  * Update lintian overrides
+  * Update copyright
+
+ -- Xavier Guimard <yadd@debian.org>  Fri, 20 Nov 2020 12:33:15 +0100
+
+node-webpack (4.43.0-7) unstable; urgency=medium
+
+  * Team upload
+  * Add ctype=nodejs to component(s)
+  * Fix GitHub tags regex
+  * Transition: embed old enhanced resolve
+
+ -- Yadd <yadd@debian.org>  Tue, 28 Dec 2021 08:44:16 +0100
+
 node-webpack (4.43.0-6) unstable; urgency=medium
 
   * Team upload

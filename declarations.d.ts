@@ -1,17 +1,26 @@
 declare module "*.json";
 
-// Deprecated NodeJS API usages in Webpack
+// Deprecated NodeJS API usages in webpack
 declare namespace NodeJS {
 	interface Process {
 		binding(internalModule: string): any;
 	}
+	interface ProcessVersions {
+		pnp: "1" | "3";
+	}
 }
 
 declare module "neo-async" {
+	interface QueueObject<T, E> {
+		push(item: T): void;
+		drain: () => void;
+		error: (err: E) => void;
+	}
+
 	export interface Dictionary<T> {
 		[key: string]: T;
 	}
-	export type IterableCollection<T> = T[] | IterableIterator<T> | Dictionary<T>;
+	export type IterableCollection<T> = T[] | Iterable<T> | Dictionary<T>;
 
 	export interface ErrorCallback<T> {
 		(err?: T): void;
@@ -104,6 +113,11 @@ declare module "neo-async" {
 		callback?: AsyncResultObjectCallback<T, E>
 	): void;
 
+	export function queue<T, E>(
+		worker: AsyncIterator<T, E>,
+		concurrency?: number
+	): QueueObject<T, E>;
+
 	export const forEach: typeof each;
 	export const forEachLimit: typeof eachLimit;
 }
@@ -190,7 +204,7 @@ declare module "@webassemblyjs/ast" {
 		raw?: string
 	): FloatLiteral;
 	export function global(globalType: string, nodes: Node[]): Global;
-	export function identifier(indentifier: string): Identifier;
+	export function identifier(identifier: string): Identifier;
 	export function funcParam(valType: string, id: Identifier): FuncParam;
 	export function instruction(inst: string, args?: Node[]): Instruction;
 	export function callInstruction(funcIndex: Index): CallInstruction;
@@ -220,6 +234,7 @@ declare module "@webassemblyjs/ast" {
 		args: string[];
 		result: string[];
 	}
+	export function moduleContextFromModuleAST(ast: any): any;
 
 	// Node matcher
 	export function isGlobalType(n: Node): boolean;
@@ -228,4 +243,144 @@ declare module "@webassemblyjs/ast" {
 	export function isFuncImportDescr(n: Node): boolean;
 }
 
+declare module "webpack-sources" {
+	export type MapOptions = { columns?: boolean; module?: boolean };
+
+	export abstract class Source {
+		size(): number;
+
+		map(options?: MapOptions): Object;
+
+		sourceAndMap(options?: MapOptions): {
+			source: string | Buffer;
+			map: Object;
+		};
+
+		updateHash(hash: import("./lib/util/Hash")): void;
+
+		source(): string | Buffer;
+
+		buffer(): Buffer;
+	}
+
+	export class RawSource extends Source {
+		constructor(source: string | Buffer, convertToString?: boolean);
+
+		isBuffer(): boolean;
+	}
+
+	export class OriginalSource extends Source {
+		constructor(source: string | Buffer, name: string);
+
+		getName(): string;
+	}
+
+	export class ReplaceSource extends Source {
+		constructor(source: Source, name?: string);
+
+		replace(start: number, end: number, newValue: string, name?: string): void;
+		insert(pos: number, newValue: string, name?: string): void;
+
+		getName(): string;
+		original(): string;
+		getReplacements(): {
+			start: number;
+			end: number;
+			content: string;
+			insertIndex: number;
+			name: string;
+		}[];
+	}
+
+	export class SourceMapSource extends Source {
+		constructor(
+			source: string | Buffer,
+			name: string,
+			sourceMap: Object | string | Buffer,
+			originalSource?: string | Buffer,
+			innerSourceMap?: Object | string | Buffer,
+			removeOriginalSource?: boolean
+		);
+
+		getArgsAsBuffers(): [
+			Buffer,
+			string,
+			Buffer,
+			Buffer | undefined,
+			Buffer | undefined,
+			boolean
+		];
+	}
+
+	export class ConcatSource extends Source {
+		constructor(...args: (string | Source)[]);
+
+		getChildren(): Source[];
+
+		add(item: string | Source): void;
+		addAllSkipOptimizing(items: Source[]): void;
+	}
+
+	export class PrefixSource extends Source {
+		constructor(prefix: string, source: string | Source);
+
+		original(): Source;
+		getPrefix(): string;
+	}
+
+	export class CachedSource extends Source {
+		constructor(source: Source);
+		constructor(source: Source | (() => Source), cachedData?: any);
+
+		original(): Source;
+		originalLazy(): Source | (() => Source);
+		getCachedData(): any;
+	}
+
+	export class SizeOnlySource extends Source {
+		constructor(size: number);
+	}
+
+	interface SourceLike {
+		source(): string | Buffer;
+	}
+
+	export class CompatSource extends Source {
+		constructor(sourceLike: SourceLike);
+
+		static from(sourceLike: SourceLike): Source;
+	}
+}
+
+declare module "browserslist" {
+	function browserslist(query: string): string[] | undefined;
+	namespace browserslist {
+		export function loadConfig(
+			options:
+				| {
+						config: string;
+						env?: string;
+				  }
+				| {
+						path: string;
+						env?: string;
+				  }
+		): string | undefined;
+		export function findConfig(path: string): Record<string, string[]>;
+	}
+	export = browserslist;
+}
+
+// TODO remove that when @types/estree is updated
+interface ImportAttributeNode {
+	type: "ImportAttribute";
+	key: import("estree").Identifier | import("estree").Literal;
+	value: import("estree").Literal;
+}
+
 type TODO = any;
+
+type RecursiveArrayOrRecord<T> =
+	| { [index: string]: RecursiveArrayOrRecord<T> }
+	| Array<RecursiveArrayOrRecord<T>>
+	| T;

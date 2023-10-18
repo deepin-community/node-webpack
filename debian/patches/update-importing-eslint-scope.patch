@@ -1,0 +1,16 @@
+Description: Update how node-eslint-scope is required 
+Causing breaking changes to some webpack reverse dependencies
+Author: Ayoyimika Ajibade <ayoyimikaajibade@gmail.com>
+Forwarded: not-needed
+Last-Update: 2022-03-15
+--- a/lib/optimize/ConcatenatedModule.js
++++ b/lib/optimize/ConcatenatedModule.js
+@@ -6,7 +6,7 @@
+ "use strict";
+ 
+ const eslintScope = require("eslint-scope");
+-const Referencer = require("eslint-scope/lib/referencer");
++const Referencer = eslintScope.Referencer;
+ const {
+ 	CachedSource,
+ 	ConcatSource,

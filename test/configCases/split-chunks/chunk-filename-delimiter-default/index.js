@@ -1,14 +1,10 @@
-it("should run", function() {
-	Promise.all(
-		[
-			import(/* webpackChunkName: "a" */ "./a"),
-			import(/* webpackChunkName: "b" */ "./b"),
-			import(/* webpackChunkName: "c" */ "./c")
-		]
-	);
-
+it("should run", function () {
 	const files = require("fs").readdirSync(__dirname);
-	const hasFile = files.indexOf('a~b~c.bundle.js') !== -1;
+	expect(files).toContain("a.bundle.js");
+	expect(files).toContain("b-b_js-c441f481.bundle.js");
 
-	expect(hasFile).toBe(true);
+	return Promise.all([
+		import(/* webpackChunkName: "a" */ "./a"),
+		import(/* webpackChunkName: "b" */ "./b")
+	]);
 });

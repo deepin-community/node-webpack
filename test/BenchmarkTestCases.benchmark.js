@@ -1,14 +1,14 @@
 "use strict";
 
 const path = require("path");
-const fs = require("fs");
+const fs = require("graceful-fs");
 const asyncLib = require("neo-async");
 const Benchmark = require("benchmark");
 const { remove } = require("./helpers/remove");
 
-describe("BenchmarkTestCases", function() {
+describe("BenchmarkTestCases", function () {
 	const casesPath = path.join(__dirname, "benchmarkCases");
-	const tests = fs.readdirSync(casesPath).filter(function(folder) {
+	const tests = fs.readdirSync(casesPath).filter(function (folder) {
 		return (
 			folder.indexOf("_") < 0 &&
 			fs.existsSync(path.resolve(casesPath, folder, "webpack.config.js"))
@@ -25,7 +25,7 @@ describe("BenchmarkTestCases", function() {
 		fs.mkdirSync(baselinesPath);
 	} catch (e) {} // eslint-disable-line no-empty
 
-	beforeAll(function(done) {
+	beforeAll(function (done) {
 		const git = require("simple-git");
 		const rootPath = path.join(__dirname, "..");
 		getBaselineRevs(rootPath, (err, baselineRevisions) => {
@@ -76,8 +76,8 @@ describe("BenchmarkTestCases", function() {
 					}
 
 					function doLoadWebpack() {
-						const baselineWebpack = require.requireActual(
-							path.resolve(baselinePath, "lib/webpack.js")
+						const baselineWebpack = jest.requireActual(
+							path.resolve(baselinePath, "lib/index.js")
 						);
 						baselines.push({
 							name: baselineInfo.name,
@@ -171,51 +171,15 @@ describe("BenchmarkTestCases", function() {
 		if (n <= 30) {
 			//            1      2      ...
 			const data = [
-				6.314,
-				2.92,
-				2.353,
-				2.132,
-				2.015,
-				1.943,
-				1.895,
-				1.86,
-				1.833,
-				1.812,
-				1.796,
-				1.782,
-				1.771,
-				1.761,
-				1.753,
-				1.746,
-				1.74,
-				1.734,
-				1.729,
-				1.725,
-				1.721,
-				1.717,
-				1.714,
-				1.711,
-				1.708,
-				1.706,
-				1.703,
-				1.701,
-				1.699,
-				1.697
+				6.314, 2.92, 2.353, 2.132, 2.015, 1.943, 1.895, 1.86, 1.833, 1.812,
+				1.796, 1.782, 1.771, 1.761, 1.753, 1.746, 1.74, 1.734, 1.729, 1.725,
+				1.721, 1.717, 1.714, 1.711, 1.708, 1.706, 1.703, 1.701, 1.699, 1.697
 			];
 			return data[n - 1];
 		} else if (n <= 120) {
 			//            30     40     50     60     70     80     90     100    110    120
 			const data = [
-				1.697,
-				1.684,
-				1.676,
-				1.671,
-				1.667,
-				1.664,
-				1.662,
-				1.66,
-				1.659,
-				1.658
+				1.697, 1.684, 1.676, 1.671, 1.667, 1.664, 1.662, 1.66, 1.659, 1.658
 			];
 			var a = data[Math.floor(n / 10) - 3];
 			var b = data[Math.ceil(n / 10) - 3];
@@ -231,7 +195,7 @@ describe("BenchmarkTestCases", function() {
 		const warmupCompiler = webpack(config, (err, stats) => {
 			warmupCompiler.purgeInputFileSystem();
 			const bench = new Benchmark(
-				function(deferred) {
+				function (deferred) {
 					const compiler = webpack(config, (err, stats) => {
 						compiler.purgeInputFileSystem();
 						if (err) {
@@ -249,18 +213,18 @@ describe("BenchmarkTestCases", function() {
 					maxTime: 30,
 					defer: true,
 					initCount: 1,
-					onComplete: function() {
+					onComplete: function () {
 						const stats = bench.stats;
 						const n = stats.sample.length;
 						const nSqrt = Math.sqrt(n);
 						const z = tDistribution(n - 1);
 						stats.minConfidence = stats.mean - (z * stats.deviation) / nSqrt;
 						stats.maxConfidence = stats.mean + (z * stats.deviation) / nSqrt;
-						stats.text = `${Math.round(stats.mean * 1000)}ms ± ${Math.round(
+						stats.text = `${Math.round(stats.mean * 1000)} ms ± ${Math.round(
 							stats.deviation * 1000
-						)}ms [${Math.round(stats.minConfidence * 1000)}ms; ${Math.round(
+						)} ms [${Math.round(stats.minConfidence * 1000)} ms; ${Math.round(
 							stats.maxConfidence * 1000
-						)}ms]`;
+						)} ms]`;
 						callback(null, bench.stats);
 					},
 					onError: callback
@@ -276,10 +240,10 @@ describe("BenchmarkTestCases", function() {
 		tests.forEach(testName => {
 			const testDirectory = path.join(casesPath, testName);
 			let headStats = null;
-			describe(`${testName} create benchmarks`, function() {
+			describe(`${testName} create benchmarks`, function () {
 				baselines.forEach(baseline => {
 					let baselineStats = null;
-					it(`should benchmark ${baseline.name} (${baseline.rev})`, function(done) {
+					it(`should benchmark ${baseline.name} (${baseline.rev})`, function (done) {
 						const outputDirectory = path.join(
 							__dirname,
 							"js",
@@ -289,7 +253,7 @@ describe("BenchmarkTestCases", function() {
 						);
 						const config =
 							Object.create(
-								require.requireActual(
+								jest.requireActual(
 									path.join(testDirectory, "webpack.config.js")
 								)
 							) || {};
@@ -314,7 +278,7 @@ describe("BenchmarkTestCases", function() {
 							testName
 						);
 						const config =
-							require.requireActual(
+							jest.requireActual(
 								path.join(testDirectory, "webpack.config.js")
 							) || {};
 						config.output = config.output || {};
@@ -330,7 +294,7 @@ describe("BenchmarkTestCases", function() {
 					}, 180000);
 
 					if (baseline.name !== "HEAD") {
-						it(`HEAD should not be slower than ${baseline.name} (${baseline.rev})`, function() {
+						it(`HEAD should not be slower than ${baseline.name} (${baseline.rev})`, function () {
 							if (baselineStats.maxConfidence < headStats.minConfidence) {
 								throw new Error(
 									`HEAD (${headStats.text}) is slower than ${baseline.name} (${baselineStats.text}) (90% confidence)`

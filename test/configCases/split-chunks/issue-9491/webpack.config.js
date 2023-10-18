@@ -1,5 +1,4 @@
-var NamedChunksPlugin = require("../../../../lib/NamedChunksPlugin");
-
+/** @type {import("../../../../").Configuration} */
 module.exports = {
 	entry: {
 		constructor: "./index"
@@ -10,7 +9,6 @@ module.exports = {
 	},
 	optimization: {
 		runtimeChunk: "single",
-		namedChunks: true
-	},
-	plugins: [new NamedChunksPlugin()]
+		chunkIds: "named"
+	}
 };
