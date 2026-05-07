@@ -130,6 +130,6 @@ if (process.env.DEBUG_INFO) {
 // Workaround for a memory leak in wabt
 // It leaks an Error object on construction
 // so it leaks the whole stack trace
-require("wast-loader");
+//require("wast-loader");
 process.removeAllListeners("uncaughtException");
 process.removeAllListeners("unhandledRejection");

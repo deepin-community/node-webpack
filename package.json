@@ -189,6 +189,10 @@
     ]
   },
   "jest": {
+    "snapshotFormat": {
+      "escapeString": true,
+      "printBasicPrototype": true
+    },
     "forceExit": true,
     "setupFilesAfterEnv": [
       "<rootDir>/test/setupTestFramework.js"

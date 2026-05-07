@@ -1,3 +1,20 @@
+node-webpack (5.76.1+dfsg1+~cs17.16.16-1deepin1) unstable; urgency=medium
+
+  * Fix CVE-2025-68157, CVE-2025-68458: SSRF vulnerabilities in
+    HttpUriPlugin    CVE-2025-68157: The HTTP(S) resolver enforces
+    allowedUris only for the   initial URL, but does not re-validate
+    after following HTTP 30x redirects.   This allows an import that
+    appears restricted to a trusted allow-list to be   redirected to
+    URLs outside the allow-list.    CVE-2025-68458: The HTTP(S) resolver
+    can be bypassed to fetch resources   from hosts outside allowedUris
+    by using crafted URLs that include userinfo
+    (username:password@host). If allowedUris enforcement relies on a raw
+    string   prefix check, a URL that looks allow-listed can pass
+    validation while the   actual network request is sent to a different
+    authority/host.
+
+ -- Yadd <yadd@debian.org>  Fri, 08 May 2026 00:55:50 +0800
+
 node-webpack (5.76.1+dfsg1+~cs17.16.16-1) unstable; urgency=medium
 
   * Team upload

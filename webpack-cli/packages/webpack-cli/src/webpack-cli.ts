@@ -62,6 +62,9 @@ const envinfo = require("envinfo");
 const WEBPACK_PACKAGE = process.env.WEBPACK_PACKAGE || "webpack";
 const WEBPACK_DEV_SERVER_PACKAGE = process.env.WEBPACK_DEV_SERVER_PACKAGE || "webpack-dev-server";
 
+// @ts-ignore
+const isDebianManaged = () => Boolean(process.env.DEB_HOST_ARCH)
+
 interface Information {
   Binaries?: string[];
   Browsers?: string[];
@@ -189,7 +192,9 @@ class WebpackCLI implements IWebpackCLI {
     if (!availableInstallers.length) {
       this.logger.error("No package manager found.");
 
-      process.exit(2);
+      if (!isDebianManaged()) {
+        process.exit(2);
+      }
     }
 
     return availableInstallers;
@@ -244,7 +249,9 @@ class WebpackCLI implements IWebpackCLI {
     } catch (e) {
       this.logger.error("No package manager found.");
 
-      process.exit(2);
+      if (!isDebianManaged()) {
+        process.exit(2);
+      }
     }
   }
 
@@ -254,7 +261,9 @@ class WebpackCLI implements IWebpackCLI {
     if (!packageManager) {
       this.logger.error("Can't find package manager");
 
-      process.exit(2);
+      if (!isDebianManaged()) {
+        process.exit(2);
+      }
     }
 
     if (options.preMessage) {
@@ -526,6 +535,10 @@ class WebpackCLI implements IWebpackCLI {
         // Allow to use `./path/to/webpack-dev-server.js` outside `node_modules`
         if (dependency === WEBPACK_DEV_SERVER_PACKAGE && fs.existsSync(WEBPACK_PACKAGE)) {
           skipInstallation = true;
+        }
+
+        if (!isDebianManaged()) {
+          skipInstallation = true
         }
 
         if (skipInstallation) {

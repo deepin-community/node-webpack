@@ -264,8 +264,11 @@ async function terserMinify(
 
   // Let terser generate a SourceMap
   if (sourceMap) {
-    // @ts-ignore
-    terserOptions.sourceMap = { asObject: true };
+    const pkg = require("terser/package.json")
+    if (parseInt(pkg.version) > 4) {
+      // @ts-ignore
+      terserOptions.sourceMap = { asObject: true };
+    }
   }
 
   /** @type {ExtractedComments} */
@@ -299,7 +302,11 @@ async function terserMinify(
   }
 
   const [[filename, code]] = Object.entries(input);
-  const result = await minify({ [filename]: code }, terserOptions);
+  let result = minify({ [filename]: code }, terserOptions);
+
+  if (result instanceof Promise) {
+    result = await result
+  }
 
   return {
     code: /** @type {string} **/ (result.code),

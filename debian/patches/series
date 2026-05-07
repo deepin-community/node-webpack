@@ -4,3 +4,4 @@ webpack-cli-path.patch
 terser-webpack-plugin.patch
 fix-for-jest-29.patch
 fix-tsconfig.patch
+CVE-2025-68157-68458.patch

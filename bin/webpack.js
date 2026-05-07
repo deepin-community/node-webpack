@@ -44,7 +44,7 @@ const isInstalled = packageName => {
 	do {
 		try {
 			if (
-				fs.statSync(path.join(dir, "node_modules", packageName)).isDirectory()
+				fs.statSync('/usr/share/nodejs/webpack-cli/').isDirectory()
 			) {
 				return true;
 			}
@@ -62,7 +62,7 @@ const isInstalled = packageName => {
  */
 const runCli = cli => {
 	const path = require("path");
-	const pkgPath = require.resolve(`${cli.package}/package.json`);
+	const pkgPath = require.resolve(`/usr/share/nodejs/${cli.package}/package.json`);
 	// eslint-disable-next-line node/no-missing-require
 	const pkg = require(pkgPath);
 	// eslint-disable-next-line node/no-missing-require
