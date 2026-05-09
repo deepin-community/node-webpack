@@ -1,3 +1,15 @@
+node-webpack (5.76.1+dfsg1+~cs17.16.16-2) unstable; urgency=medium
+
+  * Fix CVE-2025-68157: HTTP(S) resolver enforces allowedUris only for the
+    initial URL, but does not re-validate allowedUris after following HTTP
+    30x redirects. This allows an import that appears restricted to a trusted
+    allow-list to be redirected to URLs outside the allow-list.
+  * Fix CVE-2025-68458: HTTP(S) resolver can be bypassed to fetch resources
+    from hosts outside allowedUris by using crafted URLs that include userinfo
+    (username:password@host).
+
+ -- deepin-ci-robot <packages@deepin.org>  Fri, 09 May 2026 09:50:00 +0800
+
 node-webpack (5.76.1+dfsg1+~cs17.16.16-1) unstable; urgency=medium
 
   * Team upload
