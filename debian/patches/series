@@ -1,3 +1,4 @@
+CVE-2025-68157-68458.patch
 update-importing-eslint-scope.patch
 dont-require-wast-loader.patch
 webpack-cli-path.patch
